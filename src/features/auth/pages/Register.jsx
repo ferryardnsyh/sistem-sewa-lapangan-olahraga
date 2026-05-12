@@ -20,6 +20,7 @@ function Register() {
       ...form,
       [e.target.name]: e.target.value,
     });
+    setError("");
   };
 
   // HANDLE REGISTER
@@ -31,7 +32,7 @@ const handleRegister = async () => {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-  const phoneRegex = /^[0-9]{12}$/;
+    const phoneRegex = /^08[0-9]{9,11}$/;
 
   // VALIDASI
   if (!nama || !email || !phone || !password) {
@@ -55,7 +56,7 @@ const handleRegister = async () => {
   try {
 
     const response = await axios.post(
-      "http://localhost:5000/register",
+      "http://localhost:3000/register",
       {
         nama_user: nama,
         email: email,
