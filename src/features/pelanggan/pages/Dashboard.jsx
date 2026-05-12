@@ -469,122 +469,90 @@ function Dashboard() {
 
       {/* ================= FOOTER ================= */}
 
-        <footer
-          ref={footerRef}
-          className="bg-[#03112B] text-white mt-10"
-        >
-        <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <footer className="bg-[#020817] py-16">
 
-          {/* LOGO */}
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+
           <div>
 
-            <div className="flex items-center gap-2">
+            <h1 className="text-white text-2xl font-black italic uppercase">
+              Sport Center
+            </h1>
 
-              <span className="material-symbols-outlined text-blue-500">
-                sports_soccer
-              </span>
-
-              <h1 className="text-3xl font-black uppercase font-[Montserrat]">
-                SPORT CENTER
-              </h1>
-
-            </div>
-
-            <p className="text-white/50 mt-5 leading-relaxed text-sm">
-              Platform booking lapangan olahraga online terbaik dan terpercaya.
+            <p className="text-white/50 mt-5 text-sm leading-relaxed">
+              Platform booking lapangan olahraga online modern
+              dan terpercaya di Indonesia.
             </p>
-
-            <div className="flex gap-3 mt-6">
-
-              <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[18px]">
-                  public
-                </span>
-              </div>
-
-              <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[18px]">
-                  photo_camera
-                </span>
-              </div>
-
-            </div>
 
           </div>
 
-          {/* NAVIGATION */}
           <div>
 
-            <h3 className="font-semibold mb-5 uppercase text-sm">
-              Navigation
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Menu
             </h3>
 
             <ul className="space-y-3 text-white/50 text-sm">
 
               <li>Home</li>
               <li>About</li>
-              <li>Fasilitas</li>
-              <li>Harga</li>
-              <li>Kontak</li>
+              <li>Venue</li>
 
             </ul>
 
           </div>
 
-          {/* BANTUAN */}
           <div>
 
-            <h3 className="font-semibold mb-5 uppercase text-sm">
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
               Bantuan
             </h3>
 
             <ul className="space-y-3 text-white/50 text-sm">
 
-              <li>Cara Booking</li>
-              <li>Syarat & Ketentuan</li>
               <li>FAQ</li>
-              <li>Kebijakan Privasi</li>
+              <li>Cara Booking</li>
+              <li>Privacy Policy</li>
 
             </ul>
 
           </div>
 
-          {/* CONTACT */}
           <div>
 
-            <h3 className="font-semibold mb-5 uppercase text-sm">
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
               Hubungi Kami
             </h3>
 
             <ul className="space-y-4 text-white/50 text-sm">
 
-              <li className="flex gap-3">
-
-                <span className="material-symbols-outlined text-[18px]">
-                  location_on
-                </span>
-
-                Jl. Atletik No. 88, Jakarta Selatan
-
-              </li>
-
-              <li className="flex gap-3">
+              <li className="flex items-center gap-2">
 
                 <span className="material-symbols-outlined text-[18px]">
                   call
                 </span>
 
-                +62 21 555 124
+                0821-1234-5678
 
               </li>
 
-              <li className="flex gap-3">
+              <li className="flex items-center gap-2">
 
                 <span className="material-symbols-outlined text-[18px]">
-                  schedule
+                  mail
                 </span>
 
-                Buka 08:00 - 23:00
+                info@sportcenter.com
+
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  location_on
+                </span>
+
+                Bandung, Indonesia
 
               </li>
 
@@ -594,9 +562,8 @@ function Dashboard() {
 
         </div>
 
-        {/* COPYRIGHT */}
-        <div className="border-t border-white/10 py-5 text-center text-white/30 text-xs uppercase tracking-widest">
-          © 2024 Sport Center. All Rights Reserved.
+        <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
+          © 2024 Sport Center. All rights reserved.
         </div>
 
       </footer>

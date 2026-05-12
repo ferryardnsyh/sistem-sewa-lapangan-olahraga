@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ function Register() {
   };
 
   // HANDLE REGISTER
-const handleRegister = async () => {
+  const handleRegister = async () => {
   const { nama, email, phone, password } = form;
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -119,21 +120,12 @@ const handleRegister = async () => {
           {/* MENU */}
           <nav className="hidden md:flex items-center gap-10 text-white/70 text-sm">
 
-            <a href="/" className="hover:text-white transition">
+            <Link
+              to="/homepage"
+              className="hover:text-gray-300 transition"
+            >
               Home
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              About
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              Fasilitas
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              Harga
-            </a>
+            </Link>
 
             <a href="#" className="hover:text-white transition">
               Kontak
@@ -331,83 +323,96 @@ const handleRegister = async () => {
 
       </div>
 
-      {/* ================= FOOTER ================= */}
-      <footer className="relative z-10 border-t border-white/10 mt-10">
+  <footer className="relative z-20 border-b border-white/10">
 
-        <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+  <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 
-          {/* LOGO */}
-          <div>
+    {/* LOGO */}
+    <div>
 
-            <h1 className="text-white text-3xl font-black uppercase italic font-[Montserrat]">
-              SPORT CENTER
-            </h1>
+      <h1 className="text-white text-2xl font-black italic uppercase">
+        Sport Center
+      </h1>
 
-            <p className="text-white/50 mt-5 leading-relaxed text-sm">
-              Partner terpercaya untuk fasilitas olahraga premium dan manajemen aktivitas atletik Anda.
-            </p>
+      <p className="text-white/50 mt-5 text-sm leading-relaxed">
+        Platform booking lapangan olahraga online modern
+        dan terpercaya di Indonesia.
+      </p>
 
-          </div>
+    </div>
 
-          {/* MENU */}
-          <div>
+    {/* MENU */}
+    <div>
 
-            <h3 className="text-white font-bold uppercase text-sm mb-5">
-              Menu
-            </h3>
+      <h3 className="text-white font-bold uppercase text-sm mb-5">
+        Menu
+      </h3>
 
-            <ul className="space-y-3 text-white/50 text-sm">
+      <ul className="space-y-3 text-white/50 text-sm">
+        <li>Home</li>
+        <li>About</li>
+        <li>Venue</li>
+      </ul>
 
-              <li>Home</li>
-              <li>About</li>
-              <li>Fasilitas</li>
-              <li>Harga</li>
+    </div>
 
-            </ul>
+    {/* BANTUAN */}
+    <div>
 
-          </div>
+      <h3 className="text-white font-bold uppercase text-sm mb-5">
+        Bantuan
+      </h3>
 
-          {/* BANTUAN */}
-          <div>
+      <ul className="space-y-3 text-white/50 text-sm">
+        <li>FAQ</li>
+        <li>Cara Booking</li>
+        <li>Privacy Policy</li>
+      </ul>
 
-            <h3 className="text-white font-bold uppercase text-sm mb-5">
-              Bantuan
-            </h3>
+    </div>
 
-            <ul className="space-y-3 text-white/50 text-sm">
+    {/* KONTAK */}
+    <div>
 
-              <li>Kontak</li>
-              <li>Cara Booking</li>
-              <li>FAQ</li>
+      <h3 className="text-white font-bold uppercase text-sm mb-5">
+        Hubungi Kami
+      </h3>
 
-            </ul>
+      <ul className="space-y-4 text-white/50 text-sm">
 
-          </div>
+        <li className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-[18px]">
+            call
+          </span>
+          0821-1234-5678
+        </li>
 
-          {/* LEGAL */}
-          <div>
+        <li className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-[18px]">
+            mail
+          </span>
+          info@sportcenter.com
+        </li>
 
-            <h3 className="text-white font-bold uppercase text-sm mb-5">
-              Legal
-            </h3>
+        <li className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-[18px]">
+            location_on
+          </span>
+          Bandung, Indonesia
+        </li>
 
-            <ul className="space-y-3 text-white/50 text-sm">
+      </ul>
 
-              <li>Syarat & Ketentuan</li>
-              <li>Kebijakan Privasi</li>
+    </div>
 
-            </ul>
+  </div>
 
-          </div>
+  {/* COPYRIGHT */}
+  <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
+    © 2024 Sport Center. All rights reserved.
+  </div>
 
-        </div>
-
-        {/* COPYRIGHT */}
-        <div className="border-t border-white/10 py-5 text-center text-white/30 text-sm">
-          © 2024 Sport Center. All rights reserved.
-        </div>
-
-      </footer>
+</footer>
 
     </div>
   );
