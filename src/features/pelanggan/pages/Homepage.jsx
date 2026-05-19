@@ -156,23 +156,15 @@ function Home() {
 
               <div className="flex flex-wrap gap-4 mt-10">
 
-                <button className="bg-[#2453D2] hover:bg-blue-700 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
+                <button
+                onClick={() => navigate ("/login")}
+                className="bg-[#2453D2] hover:bg-blue-700 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
 
                   <span className="material-symbols-outlined text-[20px]">
                     calendar_month
                   </span>
 
                   Booking Sekarang
-
-                </button>
-
-                <button className="border border-white/30 hover:bg-white/10 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
-
-                  <span className="material-symbols-outlined text-[20px]">
-                    grid_view
-                  </span>
-
-                  Lihat Jadwal
 
                 </button>
 
@@ -250,7 +242,9 @@ function Home() {
                     {item.desc}
                   </p>
 
-                  <button className="mt-4 text-[#2453D2] text-xs font-bold flex items-center gap-1 hover:gap-3 transition-all">
+                  <button 
+                  onClick={() => navigate("/login")}
+                  className="mt-4 text-[#2453D2] text-xs font-bold flex items-center gap-1 hover:gap-3 transition-all">
 
                     Booking
 
@@ -367,7 +361,9 @@ function Home() {
 
             </div>
 
-            <button className="bg-white text-[#001433] px-8 py-4 rounded-xl font-bold hover:scale-105 transition flex items-center gap-2">
+            <button 
+            onClick={() => navigate("/login")}
+            className="bg-white text-[#001433] px-8 py-4 rounded-xl font-bold hover:scale-105 transition flex items-center gap-2">
 
               Booking Sekarang
 
@@ -479,7 +475,7 @@ function Home() {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
-          © 2024 Sport Center. All rights reserved.
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>

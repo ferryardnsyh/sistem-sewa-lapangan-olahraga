@@ -391,11 +391,12 @@ function Register() {
 
               <li className="flex items-center gap-2">
 
-                <span className="material-symbols-outlined text-[18px]">
+              <span className="material-symbols-outlined text-[18px]">
                   mail
                 </span>
 
                 info@sportcenter.com
+
 
               </li>
 
@@ -417,7 +418,7 @@ function Register() {
 
         {/* COPYRIGHT */}
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
-          © 2024 Sport Center. All rights reserved.
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>

@@ -9,13 +9,17 @@ function Login() {
   const [password, setPassword] = useState("");
 
   // AUTO LOGIN CHECK
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("user"));
 
-    if (user) {
+  if (user) {
+    if (user.role === "admin") {
+      navigate("/dashboardadmin");
+    } else {
       navigate("/dashboard");
     }
-  }, [navigate]);
+  }
+}, [navigate]);
 
   // HANDLE LOGIN
   const handleLogin = async () => {
@@ -47,7 +51,11 @@ function Login() {
 
       alert(response.data.message);
 
-      navigate("/dashboard");
+      if (user.role === "admin") {
+        navigate("/dashboardadmin");
+      } else {
+        navigate("/dashboard");
+      }
 
     } catch (error) {
 
@@ -112,7 +120,7 @@ function Login() {
               className="hover:text-white transition"
             >
               Kontak
-          </a>
+            </a>
 
           </nav>
 
@@ -253,10 +261,12 @@ function Login() {
       </div>
 
       {/* ================= FOOTER ================= */}
-      <footer id="kontak"
-      className="relative z-20 border-b border-white/10">
+      <footer
+        id="kontak"
+        className="relative z-20 border-b border-white/10"
+      >
 
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
 
           {/* LOGO */}
           <div>
@@ -349,7 +359,7 @@ function Login() {
 
         {/* COPYRIGHT */}
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
-          © 2024 Sport Center. All rights reserved.
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>
