@@ -1,11 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
-  const footerRef = useRef(null);
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/login");
