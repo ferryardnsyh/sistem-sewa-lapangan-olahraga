@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
-
 
 function Login() {
   const navigate = useNavigate();
@@ -21,47 +19,46 @@ function Login() {
 
   // HANDLE LOGIN
   const handleLogin = async () => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!email || !password) {
-    return alert("Isi semua field!");
-  }
-
-  if (!emailRegex.test(email)) {
-    return alert("Format email tidak valid!");
-  }
-
-  try {
-
-    const response = await axios.post(
-      "http://localhost:3000/login",
-      {
-        email,
-        password,
-      }
-    );
-
-    const user = response.data.user;
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify(user)
-    );
-
-    alert(response.data.message);
-
-    navigate("/dashboard");
-
-  } catch (error) {
-
-    if (error.response) {
-      alert(error.response.data.message);
-    } else {
-      alert("Server error");
+    if (!email || !password) {
+      return alert("Isi semua field!");
     }
 
-  }
-};
+    if (!emailRegex.test(email)) {
+      return alert("Format email tidak valid!");
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      const user = response.data.user;
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+      );
+
+      alert(response.data.message);
+
+      navigate("/dashboard");
+
+    } catch (error) {
+
+      if (error.response) {
+        alert(error.response.data.message);
+      } else {
+        alert("Server error");
+      }
+
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#020B1D] overflow-hidden relative font-[Inter]">
@@ -97,29 +94,25 @@ function Login() {
 
           {/* LOGO */}
           <h1 className="text-white text-2xl font-black uppercase font-[Montserrat]">
-              SPORT CENTER
-            </h1>
+            SPORT CENTER
+          </h1>
 
           {/* MENU */}
           <nav className="hidden md:flex items-center gap-10 text-white/70 text-sm">
 
-          <Link
-            to="/homepage"
-            className="hover:text-gray-300 transition"
-          >
-            Home
-          </Link>
+            <Link
+              to="/homepage"
+              className="hover:text-gray-300 transition"
+            >
+              Home
+            </Link>
 
-          <button
-            onClick={() => {
-            footerRef.current?.scrollIntoView({
-            behavior: "smooth",
-          });
-        }}
-        className="hover:text-white transition"
-        >
-          Kontak
-          </button>
+            <a
+              href="#kontak"
+              className="hover:text-white transition"
+            >
+              Kontak
+          </a>
 
           </nav>
 
@@ -180,9 +173,7 @@ function Login() {
               </label>
 
               <button className="text-blue-400 text-sm hover:text-blue-300 transition">
-
                 Lupa Kata Sandi?
-
               </button>
 
             </div>
@@ -262,96 +253,106 @@ function Login() {
       </div>
 
       {/* ================= FOOTER ================= */}
-      <footer className="relative z-20 border-b border-white/10">
+      <footer id="kontak"
+      className="relative z-20 border-b border-white/10">
 
-  <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 
-    {/* LOGO */}
-    <div>
+          {/* LOGO */}
+          <div>
 
-      <h1 className="text-white text-2xl font-black italic uppercase">
-        Sport Center
-      </h1>
+            <h1 className="text-white text-2xl font-black italic uppercase">
+              Sport Center
+            </h1>
 
-      <p className="text-white/50 mt-5 text-sm leading-relaxed">
-        Platform booking lapangan olahraga online modern
-        dan terpercaya di Indonesia.
-      </p>
+            <p className="text-white/50 mt-5 text-sm leading-relaxed">
+              Platform booking lapangan olahraga online modern
+              dan terpercaya di Indonesia.
+            </p>
 
-    </div>
+          </div>
 
-    {/* MENU */}
-    <div>
+          {/* MENU */}
+          <div>
 
-      <h3 className="text-white font-bold uppercase text-sm mb-5">
-        Menu
-      </h3>
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Menu
+            </h3>
 
-      <ul className="space-y-3 text-white/50 text-sm">
-        <li>Home</li>
-        <li>About</li>
-        <li>Venue</li>
-      </ul>
+            <ul className="space-y-3 text-white/50 text-sm">
+              <li>Home</li>
+              <li>About</li>
+              <li>Venue</li>
+            </ul>
 
-    </div>
+          </div>
 
-    {/* BANTUAN */}
-    <div>
+          {/* BANTUAN */}
+          <div>
 
-      <h3 className="text-white font-bold uppercase text-sm mb-5">
-        Bantuan
-      </h3>
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Bantuan
+            </h3>
 
-      <ul className="space-y-3 text-white/50 text-sm">
-        <li>FAQ</li>
-        <li>Cara Booking</li>
-        <li>Privacy Policy</li>
-      </ul>
+            <ul className="space-y-3 text-white/50 text-sm">
+              <li>FAQ</li>
+              <li>Cara Booking</li>
+              <li>Privacy Policy</li>
+            </ul>
 
-    </div>
+          </div>
 
-    {/* KONTAK */}
-    <div>
+          {/* KONTAK */}
+          <div>
 
-      <h3 className="text-white font-bold uppercase text-sm mb-5">
-        Hubungi Kami
-      </h3>
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Hubungi Kami
+            </h3>
 
-      <ul className="space-y-4 text-white/50 text-sm">
+            <ul className="space-y-4 text-white/50 text-sm">
 
-        <li className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">
-            call
-          </span>
-          0821-1234-5678
-        </li>
+              <li className="flex items-center gap-2">
 
-        <li className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">
-            mail
-          </span>
-          info@sportcenter.com
-        </li>
+                <span className="material-symbols-outlined text-[18px]">
+                  call
+                </span>
 
-        <li className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">
-            location_on
-          </span>
-          Bandung, Indonesia
-        </li>
+                0821-1234-5678
 
-      </ul>
+              </li>
 
-    </div>
+              <li className="flex items-center gap-2">
 
-  </div>
+                <span className="material-symbols-outlined text-[18px]">
+                  mail
+                </span>
 
-  {/* COPYRIGHT */}
-  <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
-    © 2024 Sport Center. All rights reserved.
-  </div>
+                info@sportcenter.com
 
-</footer>
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  location_on
+                </span>
+
+                Bandung, Indonesia
+
+              </li>
+
+            </ul>
+
+          </div>
+
+        </div>
+
+        {/* COPYRIGHT */}
+        <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
+          © 2024 Sport Center. All rights reserved.
+        </div>
+
+      </footer>
 
     </div>
   );

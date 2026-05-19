@@ -85,7 +85,8 @@ function Home() {
               Home
             </a>
 
-            <a href="#" className="hover:text-gray-300 transition">
+            <a href="#about" 
+            className="hover:text-gray-300 transition">
               About
             </a>
 
@@ -383,7 +384,8 @@ function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-[#020817] py-16">
+      <footer id="about"
+      className="bg-[#020817] py-16">
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 

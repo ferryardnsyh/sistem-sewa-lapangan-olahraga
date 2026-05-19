@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
@@ -21,64 +20,60 @@ function Register() {
       ...form,
       [e.target.name]: e.target.value,
     });
+
     setError("");
   };
 
   // HANDLE REGISTER
   const handleRegister = async () => {
-  const { nama, email, phone, password } = form;
+    const { nama, email, phone, password } = form;
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
     const phoneRegex = /^08[0-9]{9,11}$/;
 
-  // VALIDASI
-  if (!nama || !email || !phone || !password) {
-    return setError("Semua field wajib diisi");
-  }
+    // VALIDASI
+    if (!nama || !email || !phone || !password) {
+      return setError("Semua field wajib diisi");
+    }
 
-  if (!emailRegex.test(email)) {
-    return setError("Format email tidak valid");
-  }
+    if (!emailRegex.test(email)) {
+      return setError("Format email tidak valid");
+    }
 
-  if (!phoneRegex.test(phone)) {
-    return setError("Nomor HP harus 12 digit angka");
-  }
+    if (!phoneRegex.test(phone)) {
+      return setError("Nomor HP harus 12 digit angka");
+    }
 
-  if (!passwordRegex.test(password)) {
-    return setError(
-      "Password minimal 8 karakter dan harus mengandung huruf besar, kecil, angka, serta simbol"
-    );
-  }
+    if (!passwordRegex.test(password)) {
+      return setError(
+        "Password minimal 8 karakter dan harus mengandung huruf besar, kecil, angka, serta simbol"
+      );
+    }
 
-  try {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/register",
+        {
+          nama_user: nama,
+          email: email,
+          no_telp: phone,
+          password: password,
+        }
+      );
 
-    const response = await axios.post(
-      "http://localhost:3000/register",
-      {
-        nama_user: nama,
-        email: email,
-        no_telp: phone,
-        password: password,
-      }
-    );
+      alert(response.data.message);
 
-    alert(response.data.message);
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
 
-    navigate("/login");
-
-  } catch (err) {
-
-    console.log(err);
-
-    setError(
-      err.response?.data?.message || "Register gagal!"
-    );
-  }
-};
+      setError(err.response?.data?.message || "Register gagal!");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#020B1D] overflow-hidden relative font-[Inter]">
@@ -127,7 +122,10 @@ function Register() {
               Home
             </Link>
 
-            <a href="#" className="hover:text-white transition">
+            <a
+              href="#kontak"
+              className="hover:text-white transition"
+            >
               Kontak
             </a>
 
@@ -323,96 +321,106 @@ function Register() {
 
       </div>
 
-  <footer className="relative z-20 border-b border-white/10">
+      <footer id="kontak"
+      className="relative z-20 border-b border-white/10">
 
-  <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 
-    {/* LOGO */}
-    <div>
+          {/* LOGO */}
+          <div>
 
-      <h1 className="text-white text-2xl font-black italic uppercase">
-        Sport Center
-      </h1>
+            <h1 className="text-white text-2xl font-black italic uppercase">
+              Sport Center
+            </h1>
 
-      <p className="text-white/50 mt-5 text-sm leading-relaxed">
-        Platform booking lapangan olahraga online modern
-        dan terpercaya di Indonesia.
-      </p>
+            <p className="text-white/50 mt-5 text-sm leading-relaxed">
+              Platform booking lapangan olahraga online modern
+              dan terpercaya di Indonesia.
+            </p>
 
-    </div>
+          </div>
 
-    {/* MENU */}
-    <div>
+          {/* MENU */}
+          <div>
 
-      <h3 className="text-white font-bold uppercase text-sm mb-5">
-        Menu
-      </h3>
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Menu
+            </h3>
 
-      <ul className="space-y-3 text-white/50 text-sm">
-        <li>Home</li>
-        <li>About</li>
-        <li>Venue</li>
-      </ul>
+            <ul className="space-y-3 text-white/50 text-sm">
+              <li>Home</li>
+              <li>About</li>
+              <li>Venue</li>
+            </ul>
 
-    </div>
+          </div>
 
-    {/* BANTUAN */}
-    <div>
+          {/* BANTUAN */}
+          <div>
 
-      <h3 className="text-white font-bold uppercase text-sm mb-5">
-        Bantuan
-      </h3>
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Bantuan
+            </h3>
 
-      <ul className="space-y-3 text-white/50 text-sm">
-        <li>FAQ</li>
-        <li>Cara Booking</li>
-        <li>Privacy Policy</li>
-      </ul>
+            <ul className="space-y-3 text-white/50 text-sm">
+              <li>FAQ</li>
+              <li>Cara Booking</li>
+              <li>Privacy Policy</li>
+            </ul>
 
-    </div>
+          </div>
 
-    {/* KONTAK */}
-    <div>
+          {/* KONTAK */}
+          <div>
 
-      <h3 className="text-white font-bold uppercase text-sm mb-5">
-        Hubungi Kami
-      </h3>
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Hubungi Kami
+            </h3>
 
-      <ul className="space-y-4 text-white/50 text-sm">
+            <ul className="space-y-4 text-white/50 text-sm">
 
-        <li className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">
-            call
-          </span>
-          0821-1234-5678
-        </li>
+              <li className="flex items-center gap-2">
 
-        <li className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">
-            mail
-          </span>
-          info@sportcenter.com
-        </li>
+                <span className="material-symbols-outlined text-[18px]">
+                  call
+                </span>
 
-        <li className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">
-            location_on
-          </span>
-          Bandung, Indonesia
-        </li>
+                0821-1234-5678
 
-      </ul>
+              </li>
 
-    </div>
+              <li className="flex items-center gap-2">
 
-  </div>
+                <span className="material-symbols-outlined text-[18px]">
+                  mail
+                </span>
 
-  {/* COPYRIGHT */}
-  <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
-    © 2024 Sport Center. All rights reserved.
-  </div>
+                info@sportcenter.com
 
-</footer>
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  location_on
+                </span>
+
+                Bandung, Indonesia
+
+              </li>
+
+            </ul>
+
+          </div>
+
+        </div>
+
+        {/* COPYRIGHT */}
+        <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
+          © 2024 Sport Center. All rights reserved.
+        </div>
+
+      </footer>
 
     </div>
   );
