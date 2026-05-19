@@ -5,6 +5,8 @@ import Homepage from "./features/pelanggan/pages/Homepage"
 import Dashboard from "./features/pelanggan/pages/Dashboard"
 import Booking from "./features/pelanggan/pages/Booking"
 import Halamanpesan from "./features/pelanggan/pages/Halamanpesan"
+import Pembayaran from "./features/pelanggan/pages/Pembayaran"
+import DashboardAdmin from "./features/admin/pages/DashboardAdmin"
 import ProtectedRoute from "./components/ProtectedRoute"
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/Booking" element={<Booking />} />
         <Route path="/Halamanpesan" element={<Halamanpesan />} />
+        <Route path="/Pembayaran" element={<Pembayaran />} />
+        <Route path="/DashboardAdmin" element={<DashboardAdmin />} />
         {/* DASHBOARD */}
         <Route
           path="/dashboard"

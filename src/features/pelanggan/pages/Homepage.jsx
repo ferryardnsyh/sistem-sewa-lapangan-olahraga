@@ -166,16 +166,6 @@ function Home() {
 
                 </button>
 
-                <button className="border border-white/30 hover:bg-white/10 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
-
-                  <span className="material-symbols-outlined text-[20px]">
-                    grid_view
-                  </span>
-
-                  Lihat Jadwal
-
-                </button>
-
               </div>
 
               {/* DOT */}
@@ -479,7 +469,7 @@ function Home() {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
-          © 2024 Sport Center. All rights reserved.
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>

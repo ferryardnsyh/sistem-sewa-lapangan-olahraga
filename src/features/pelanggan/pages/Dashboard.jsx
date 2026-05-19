@@ -6,13 +6,14 @@ function Dashboard() {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const footerRef = useRef(null);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/login");
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F5F9] font-[Inter]">
+    <div className="min-h-screen bg-[#EEF2F7] font-[Inter]">
 
       {/* GOOGLE FONT */}
       <link
@@ -27,230 +28,286 @@ function Dashboard() {
       />
 
       {/* ================= NAVBAR ================= */}
-      <header className="bg-[#03112B] border-b border-white/10">
+      <header className="sticky top-0 z-50 bg-[#001433]/95 backdrop-blur-md border-b border-white/10 shadow-lg">
 
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
           {/* LOGO */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
 
-            <span className="material-symbols-outlined text-blue-500">
-              sports_soccer
-            </span>
+            <div className="w-11 h-11 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg">
 
-            <h1 className="text-white text-2xl font-black uppercase font-[Montserrat]">
-              SPORT CENTER
-            </h1>
+              <span className="material-symbols-outlined text-white">
+                sports_soccer
+              </span>
+
+            </div>
+
+            <div>
+
+              <h1 className="text-white text-2xl font-black uppercase leading-none font-[Montserrat]">
+                SPORT CENTER
+              </h1>
+
+            </div>
 
           </div>
 
-          {/* LOGIN */}
-          <button
-            onClick={handleLogout}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm flex items-center gap-2 transition"
-          >
+          {/* USER */}
+          <div className="flex items-center gap-4">
 
-            <span className="material-symbols-outlined text-[18px]">
-              logout
-            </span>
+            <div className="hidden md:flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
 
-            Logout
-
-          </button>
-
-        </div>
-
-      </header>
-
-      {/* ================= CONTENT ================= */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
-
-        {/* WELCOME */}
-        <div className="mb-8">
-
-          <h2 className="text-[#03112B] text-2xl font-bold">
-            Halo, {user?.nama_user}!
-          </h2>
-
-          <p className="text-gray-500 mt-2">
-            Selamat datang kembali di dashboard performa Anda.
-          </p>
-
-        </div>
-
-        {/* ================= TOP GRID ================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-
-          {/* LEFT CONTENT */}
-          <div className="lg:col-span-3 space-y-6">
-
-            {/* STATS */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-
-              {/* CARD 1 */}
-              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-
-                <div className="flex items-center justify-between">
-
-                  <span className="material-symbols-outlined text-blue-600">
-                    calendar_month
-                  </span>
-
-                </div>
-
-                <p className="text-gray-400 text-xs uppercase mt-4">
-                  Total Booking
-                </p>
-
-                <h3 className="text-4xl font-black text-[#03112B] mt-2">
-                  42
-                </h3>
-
+              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                {user?.nama_user?.charAt(0)}
               </div>
 
-              {/* CARD 2 */}
-              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div>
 
-                <div className="flex items-center justify-between">
-
-                  <span className="material-symbols-outlined text-blue-600">
-                    inventory
-                  </span>
-
-                </div>
-
-                <p className="text-gray-400 text-xs uppercase mt-4">
-                  Booking Active
-                </p>
-
-                <h3 className="text-4xl font-black text-[#03112B] mt-2">
-                  3
+                <h3 className="text-sm text-white font-semibold">
+                  {user?.nama_user}
                 </h3>
 
-              </div>
-
-              {/* CARD 3 */}
-              <div className="bg-gradient-to-r from-[#0C4DDE] to-[#2563EB] rounded-2xl p-5 shadow-lg text-white">
-
-                <div className="flex items-center justify-between">
-
-                  <span className="material-symbols-outlined">
-                    verified
-                  </span>
-
-                </div>
-
-                <p className="text-white/70 text-xs uppercase mt-4">
-                  Poin Reward
+                <p className="text-xs text-white/50">
+                  Member Active
                 </p>
-
-                <h3 className="text-4xl font-black mt-2">
-                  1.250
-                </h3>
 
               </div>
 
             </div>
 
-            {/* JADWAL */}
+            <button
+              onClick={handleLogout}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-sm flex items-center gap-2 transition shadow-lg"
+            >
+
+              <span className="material-symbols-outlined text-[18px]">
+                logout
+              </span>
+
+              Logout
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </header>
+
+      {/* ================= HERO ================= */}
+      <section className="relative overflow-hidden bg-[#001433]">
+
+        <div className="absolute inset-0 opacity-20">
+          <img
+            src="https://images.unsplash.com/photo-1547347298-4074fc3086f0?q=80&w=1400&auto=format&fit=crop"
+            alt="Hero"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-14">
+
+          <div className="flex flex-col lg:flex-row justify-between gap-10 items-center">
+
             <div>
+              <h1 className="text-white text-5xl md:text-6xl font-black italic uppercase mt-5 leading-tight font-[Montserrat]">
 
-              <div className="flex items-center gap-2 mb-4">
+                Selamat Datang, <br />
+                {user?.nama_user}
 
-                <span className="material-symbols-outlined text-[#03112B]">
-                  schedule
-                </span>
+              </h1>
 
-                <h3 className="font-semibold text-[#03112B]">
-                  Jadwal Mendatang
-                </h3>
+              <p className="text-white/70 mt-6 max-w-2xl leading-relaxed">
+                Kelola jadwal booking, cek status pesanan,
+                dan nikmati pengalaman booking lapangan olahraga
+                modern dengan tampilan dashboard premium.
+              </p>
+
+              <div className="flex flex-wrap gap-4 mt-8">
+
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-semibold flex items-center gap-2 transition shadow-lg">
+
+                  <span className="material-symbols-outlined">
+                    add_circle
+                  </span>
+
+                  Booking Sekarang
+
+                </button>
 
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            </div>
 
-                <div className="grid md:grid-cols-[240px_1fr]">
+          </div>
 
-                  {/* IMAGE */}
-                  <div className="relative">
+        </div>
 
-                    <img
-                      src="https://images.unsplash.com/photo-1547347298-4074fc3086f0?q=80&w=1200&auto=format&fit=crop"
-                      alt="Lapangan"
-                      className="w-full h-full object-cover"
-                    />
+      </section>
 
-                    <div className="absolute top-4 left-4 bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
-                      BESOK
-                    </div>
+      {/* ================= CONTENT ================= */}
+      <div className="max-w-7xl mx-auto px-6 py-10">
 
+        {/* STATS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          {[
+            {
+              title: "Total Booking",
+              value: "42",
+              icon: "calendar_month",
+            },
+            {
+              title: "Booking Aktif",
+              value: "3",
+              icon: "inventory",
+            },
+            {
+              title: "Poin Reward",
+              value: "1.250",
+              icon: "verified",
+            },
+          
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-xl transition"
+            >
+
+              <div className="flex items-center justify-between">
+
+                <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center">
+
+                  <span className="material-symbols-outlined text-blue-600">
+                    {item.icon}
+                  </span>
+
+                </div>
+
+              </div>
+
+              <p className="text-gray-400 text-sm mt-6">
+                {item.title}
+              </p>
+
+              <h3 className="text-4xl font-black text-[#001433] mt-2">
+                {item.value}
+              </h3>
+
+            </div>
+          ))}
+
+        </div>
+
+        {/* MAIN GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
+
+          {/* LEFT */}
+          <div className="lg:col-span-2 space-y-8">
+
+            {/* JADWAL */}
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+
+              <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
+
+                <div>
+
+                  <h3 className="text-2xl font-bold text-[#001433]">
+                    Jadwal Mendatang
+                  </h3>
+
+                  <p className="text-gray-400 text-sm mt-1">
+                    Booking yang akan datang
+                  </p>
+
+                </div>
+
+                <button className="text-blue-600 font-semibold text-sm">
+                  Lihat Semua
+                </button>
+
+              </div>
+
+              <div className="grid md:grid-cols-[300px_1fr]">
+
+                {/* IMAGE */}
+                <div className="relative h-full">
+
+                  <img
+                    src="https://images.unsplash.com/photo-1547347298-4074fc3086f0?q=80&w=1200&auto=format&fit=crop"
+                    alt="Lapangan"
+                    className="w-full h-full object-cover"
+                  />
+
+                  <div className="absolute top-5 left-5 bg-blue-600 text-white text-xs px-4 py-2 rounded-full font-semibold shadow-lg">
+                    BESOK
                   </div>
 
-                  {/* CONTENT */}
-                  <div className="p-6">
+                </div>
 
-                    <div className="flex items-start justify-between gap-4">
+                {/* CONTENT */}
+                <div className="p-8">
 
-                      <div>
+                  <div className="flex flex-col md:flex-row justify-between gap-5">
 
-                        <h3 className="text-xl font-bold text-[#03112B]">
-                          Badminton - Court 4
-                        </h3>
+                    <div>
 
-                        <div className="flex flex-wrap items-center gap-5 mt-4 text-gray-500 text-sm">
+                      <h2 className="text-3xl font-black text-[#001433]">
+                        Badminton Court 4
+                      </h2>
 
-                          <div className="flex items-center gap-2">
+                      <div className="space-y-3 mt-6 text-gray-500">
 
-                            <span className="material-symbols-outlined text-[18px]">
-                              calendar_month
-                            </span>
+                        <div className="flex items-center gap-3">
 
-                            Selasa, 24 Mei 2024
+                          <span className="material-symbols-outlined">
+                            calendar_month
+                          </span>
 
-                          </div>
-
-                          <div className="flex items-center gap-2">
-
-                            <span className="material-symbols-outlined text-[18px]">
-                              schedule
-                            </span>
-
-                            19:00 - 21:00
-
-                          </div>
+                          Selasa, 24 Mei 2026
 
                         </div>
 
-                        <div className="flex items-center gap-2 mt-3 text-gray-500 text-sm">
+                        <div className="flex items-center gap-3">
 
-                          <span className="material-symbols-outlined text-[18px]">
+                          <span className="material-symbols-outlined">
+                            schedule
+                          </span>
+
+                          19:00 - 21:00
+
+                        </div>
+
+                        <div className="flex items-center gap-3">
+
+                          <span className="material-symbols-outlined">
                             location_on
                           </span>
 
-                          Sport Center - Hall B
+                          Sport Center Hall B
 
                         </div>
 
                       </div>
 
-                      <span className="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-xs font-semibold">
-                        Premium
-                      </span>
-
                     </div>
 
-                    {/* BUTTON */}
-                    <div className="flex gap-4 mt-6">
-
-                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition">
-                        Rincian Tiket
-                      </button>
-
-                      <button className="border border-gray-200 hover:bg-gray-100 text-gray-600 px-6 py-3 rounded-xl transition">
-                        Reschedule
-                      </button>
-
+                    <div className="bg-blue-100 text-blue-600 h-fit px-5 py-2 rounded-full text-sm font-bold">
+                      PREMIUM
                     </div>
+
+                  </div>
+
+                  <div className="flex flex-wrap gap-4 mt-10">
+
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-semibold transition shadow-lg">
+                      Detail Booking
+                    </button>
+
+                    <button className="border border-gray-200 hover:bg-gray-100 text-gray-700 px-8 py-4 rounded-2xl font-semibold transition">
+                      Reschedule
+                    </button>
 
                   </div>
 
@@ -261,96 +318,78 @@ function Dashboard() {
             </div>
 
             {/* RIWAYAT */}
-            <div>
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
 
-              <div className="flex items-center justify-between mb-4">
+              <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
 
-                <h3 className="font-semibold text-[#03112B]">
-                  Riwayat Terakhir
-                </h3>
+                <div>
 
-                <button className="text-blue-600 text-sm font-medium">
-                  Lihat Semua →
+                  <h3 className="text-2xl font-bold text-[#001433]">
+                    Riwayat Booking
+                  </h3>
+
+                  <p className="text-gray-400 text-sm mt-1">
+                    Aktivitas booking terbaru
+                  </p>
+
+                </div>
+
+                <button className="text-blue-600 text-sm font-semibold">
+                  Lihat Semua
                 </button>
 
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="divide-y">
 
-                {/* HEADER */}
-                <div className="grid grid-cols-3 bg-[#03112B] text-white text-xs uppercase px-6 py-4 font-semibold">
+                {[
+                  {
+                    icon: "sports_soccer",
+                    title: "Mini Soccer A",
+                    date: "20 Mei 2026",
+                  },
+                  {
+                    icon: "sports_basketball",
+                    title: "Basket Hall VIP",
+                    date: "15 Mei 2026",
+                  },
+          
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between px-8 py-6 hover:bg-gray-50 transition"
+                  >
 
-                  <p>Fasilitas</p>
-                  <p>Tanggal</p>
-                  <p>Status</p>
+                    <div className="flex items-center gap-5">
 
-                </div>
+                      <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center">
 
-                {/* ITEM 1 */}
-                <div className="grid grid-cols-3 items-center px-6 py-5 border-b">
+                        <span className="material-symbols-outlined text-blue-600">
+                          {item.icon}
+                        </span>
 
-                  <div className="flex items-center gap-3">
+                      </div>
 
-                    <span className="material-symbols-outlined text-blue-600">
-                      sports_soccer
-                    </span>
+                      <div>
 
-                    <div>
+                        <h4 className="font-bold text-[#001433]">
+                          {item.title}
+                        </h4>
 
-                      <h4 className="font-medium text-[#03112B]">
-                        Mini Soccer A
-                      </h4>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {item.date}
+                        </p>
 
-                      <p className="text-xs text-gray-400">
-                        VIP • B-001
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  <p className="text-gray-500">
-                    20 Mei 2024
-                  </p>
-
-                  <span className="bg-green-100 text-green-600 text-xs font-semibold px-4 py-1 rounded-full w-fit">
-                    SELESAI
-                  </span>
-
-                </div>
-
-                {/* ITEM 2 */}
-                <div className="grid grid-cols-3 items-center px-6 py-5">
-
-                  <div className="flex items-center gap-3">
-
-                    <span className="material-symbols-outlined text-blue-600">
-                      sports_basketball
-                    </span>
-
-                    <div>
-
-                      <h4 className="font-medium text-[#03112B]">
-                        Kolam Renang VIP
-                      </h4>
-
-                      <p className="text-xs text-gray-400">
-                        VIP • B-015
-                      </p>
+                      </div>
 
                     </div>
 
+                    <span className="bg-green-100 text-green-600 text-xs font-bold px-4 py-2 rounded-full">
+                      SELESAI
+                    </span>
+
                   </div>
-
-                  <p className="text-gray-500">
-                    15 Mei 2024
-                  </p>
-
-                  <span className="bg-green-100 text-green-600 text-xs font-semibold px-4 py-1 rounded-full w-fit">
-                    SELESAI
-                  </span>
-
-                </div>
+                ))}
 
               </div>
 
@@ -358,17 +397,17 @@ function Dashboard() {
 
           </div>
 
-          {/* ================= RIGHT SIDEBAR ================= */}
-          <div className="space-y-6">
+          {/* RIGHT */}
+          <div className="space-y-8">
 
             {/* QUICK ACTION */}
-            <div className="bg-[#03112B] rounded-2xl p-6 text-white shadow-lg">
+            <div className="bg-[#001433] rounded-3xl p-8 text-white shadow-xl">
 
-              <h3 className="font-semibold mb-6">
-                Aksi Cepat
+              <h3 className="text-2xl font-bold">
+                Booking lapangan baru
               </h3>
 
-              <button className="w-full bg-blue-600 hover:bg-blue-700 rounded-xl px-5 py-4 flex items-center justify-between transition">
+              <button className="w-full mt-8 bg-blue-600 hover:bg-blue-700 rounded-2xl px-6 py-5 flex items-center justify-between transition shadow-lg">
 
                 <div className="flex items-center gap-3">
 
@@ -376,7 +415,7 @@ function Dashboard() {
                     add_circle
                   </span>
 
-                  Pesan Lapangan Baru
+                  Pesan Lapangan
 
                 </div>
 
@@ -386,78 +425,42 @@ function Dashboard() {
 
               </button>
 
-              <button className="w-full mt-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl px-5 py-4 flex items-center justify-between transition">
+            </div>
 
-                <div className="flex items-center gap-3">
+            {/* INFO */}
+            <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
 
-                  <span className="material-symbols-outlined">
-                    account_balance_wallet
-                  </span>
+              <h3 className="text-2xl font-bold text-[#001433]">
+                Informasi
+              </h3>
 
-                  Top Up Saldo
+              <div className="space-y-5 mt-6">
+
+                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+
+                  <h4 className="font-bold text-blue-700">
+                    Promo Member
+                  </h4>
+
+                  <p className="text-sm text-gray-500 mt-2">
+                    Dapatkan diskon 20% untuk booking malam hari.
+                  </p>
 
                 </div>
 
-                <span className="text-sm">
-                  Rp 500k
-                </span>
+                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5">
 
-              </button>
+                  <h4 className="font-bold text-[#001433]">
+                    Jam Operasional
+                  </h4>
 
-            </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Senin - Minggu • 08:00 - 23:00
+                  </p>
 
-            {/* PROMO */}
-            <div className="relative overflow-hidden rounded-2xl shadow-lg">
-
-              <img
-                src="https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=1200&auto=format&fit=crop"
-                alt="Promo"
-                className="w-full h-56 object-cover"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-black/20 p-5 flex flex-col justify-end">
-
-                <span className="bg-orange-500 text-white text-[10px] uppercase px-3 py-1 rounded-full w-fit mb-3">
-                  Promo Khusus
-                </span>
-
-                <h3 className="text-white text-lg font-bold leading-snug">
-                  Dapatkan Diskon 50% Untuk Booking Baru!
-                </h3>
+                </div>
 
               </div>
-
-            </div>
-
-            {/* STATISTIK */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-
-              <div className="flex items-center justify-between mb-5">
-
-                <h3 className="font-semibold text-[#03112B]">
-                  Statistik Mingguan
-                </h3>
-
-                <p className="text-xs text-blue-600 font-medium">
-                  8-14 Juni
-                </p>
-
-              </div>
-
-              {/* CHART */}
-              <div className="flex items-end gap-3 h-40">
-
-                <div className="bg-gray-200 rounded-t w-full h-10" />
-                <div className="bg-blue-600 rounded-t w-full h-28" />
-                <div className="bg-gray-200 rounded-t w-full h-20" />
-                <div className="bg-gray-200 rounded-t w-full h-32" />
-                <div className="bg-gray-200 rounded-t w-full h-16" />
-
-              </div>
-
-              <p className="text-center text-gray-400 text-xs mt-5">
-                Progress Aktivitas Meningkat 12%
-              </p>
 
             </div>
 
@@ -468,8 +471,10 @@ function Dashboard() {
       </div>
 
       {/* ================= FOOTER ================= */}
-
-        <footer className="bg-[#020817] py-16">
+      <footer
+        ref={footerRef}
+        className="bg-[#020817] py-16 mt-16"
+      >
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 
@@ -563,7 +568,7 @@ function Dashboard() {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
-          © 2024 Sport Center. All rights reserved.
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>

@@ -327,7 +327,11 @@ function Login() {
                   mail
                 </span>
 
-                info@sportcenter.com
+  {/* COPYRIGHT */}
+  <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
+    © 2026 Sport Center. All rights reserved.
+  </div>
+ 6016ab3 (Menambah beberapa fitur)
 
               </li>
 
