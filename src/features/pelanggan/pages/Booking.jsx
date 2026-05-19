@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import {
   CalendarDays,
   Clock3,
@@ -10,39 +11,19 @@ import {
 } from "lucide-react";
 
 function BookingPage() {
-  const [selectedField, setSelectedField] = useState("Arena Utama 1");
+
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // ================= STATE =================
+  const [lapangan, setLapangan] = useState([]);
+  const [selectedField, setSelectedField] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const navigate = useNavigate();
-  const lapangan = [
-    {
-      id: 1,
-      nama: "Arena Utama 1",
-      kategori: "Futsal",
-      harga: "Rp 150.000",
-      lokasi: "Jakarta Selatan",
-      img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80",
-    },
+  const [bookedSlots, setBookedSlots] = useState([]);
 
-    {
-      id: 2,
-      nama: "Court Badminton B",
-      kategori: "Badminton",
-      harga: "Rp 50.000",
-      lokasi: "Bandung",
-      img: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&w=1200&q=80",
-    },
-
-    {
-      id: 3,
-      nama: "Hall Basket VIP",
-      kategori: "Basket",
-      harga: "Rp 200.000",
-      lokasi: "Jakarta Barat",
-      img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80",
-    },
-  ];
-
+  // ================= JADWAL =================
   const jadwal = [
     "08:00",
     "09:00",
@@ -56,11 +37,95 @@ function BookingPage() {
     "20:00",
   ];
 
-  const bookedSlots = ["11:00", "16:00"];
+  // ================= FETCH LAPANGAN =================
+useEffect(() => {
+  fetchLapangan();
+}, []);
 
-  const currentField = lapangan.find(
-    (item) => item.nama === selectedField
-  );
+const fetchLapangan = async () => {
+
+  try {
+
+    const response = await axios.get(
+      "http://localhost:3000/lapangan"
+    );
+
+
+    setLapangan(response.data);
+
+    if (respone.data.length > 0) {
+      setSelectedField(respone.data[0]);
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+
+};
+
+  // ================= FETCH BOOKED SLOT =================
+  useEffect(() => {
+
+    if (selectedField && selectedDate) {
+      fetchBookedSlots();
+    }
+
+  }, [selectedField, selectedDate]);
+
+  const fetchBookedSlots = async () => {
+
+    try {
+
+      const response = await axios.get(
+        `http://localhost:3000/booking/jadwal/${selectedField.id_lapangan}/${selectedDate}`
+      );
+
+      setBookedSlots(response.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
+  // ================= BOOKING =================
+  const handleBooking = async () => {
+
+    if (!selectedDate || !selectedTime) {
+      alert("Pilih tanggal dan jam booking");
+      return;
+    }
+
+    try {
+
+      const jamSelesai =
+        `${parseInt(selectedTime.split(":")[0]) + 1}:00`;
+
+      await axios.post(
+        "http://localhost:3000/booking",
+        {
+          user_id: user.id,
+          lapangan_id: selectedField.id_lapangan,
+          tanggal: selectedDate,
+          jam_mulai: selectedTime,
+          jam_selesai: jamSelesai,
+          total_harga: selectedField.harga,
+        }
+      );
+
+      alert("Booking berhasil dibuat!");
+
+      navigate("/halamanpesan");
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Booking gagal");
+
+    }
+
+  };
 
   return (
     <div className="min-h-screen bg-[#071426] text-white">
@@ -85,71 +150,68 @@ function BookingPage() {
           <h1 className="text-2xl font-extrabold italic uppercase">
             Sport Center
           </h1>
+
           <nav className="hidden md:flex gap-10 text-sm text-white/80">
-          <Link
-            to="/dashboard"
-            className="hover:text-white transition"
-          >
-            Beranda
-          </Link>
 
-          <Link
-            to="/booking"
-            className="text-blue-400"
-          >
-            Booking
-          </Link>
+            <Link
+              to="/dashboard"
+              className="hover:text-white transition"
+            >
+              Beranda
+            </Link>
 
-          <Link
-            to="/halamanpesan"
-            className=""
-          >
-            Pesanan
-          </Link>
+            <Link
+              to="/booking"
+              className="text-blue-400"
+            >
+              Booking
+            </Link>
 
+            <Link to="/halamanpesan">
+              Pesanan
+            </Link>
 
-</nav>
+          </nav>
 
         </div>
 
       </header>
 
       {/* HERO */}
-      <section className="relative h-[350px] overflow-hidden">
-
+        <section className="relative h-[350px] overflow-hidden">
         <img
-          src={currentField.img}
-          alt="Lapangan"
-          className="absolute inset-0 w-full h-full object-cover"
+        src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80"
+        alt="Hero"
+        className="absolute inset-0 w-full h-full object-cover"
         />
 
-        <div className="absolute inset-0 bg-[#001433]/80"></div>
+          <div className="absolute inset-0 bg-[#001433]/80"></div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
+          <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
 
-          <div>
+            <div>
 
-            <p className="uppercase tracking-[5px] text-blue-300 text-sm font-semibold">
-              Booking Lapangan
-            </p>
+              <p className="uppercase tracking-[5px] text-blue-300 text-sm font-semibold">
+                Booking Lapangan
+              </p>
 
-            <h1 className="text-5xl md:text-6xl font-extrabold italic uppercase leading-tight mt-4">
+              <h1 className="text-5xl md:text-6xl font-extrabold italic uppercase leading-tight mt-4">
 
-              Booking <br />
-              Lapangan Online
+                Booking <br />
+                Lapangan Online
 
-            </h1>
+              </h1>
 
-            <p className="text-white/70 mt-5 max-w-2xl leading-relaxed">
-              Pilih lapangan, tentukan jadwal bermain, dan lakukan booking
-              secara online dengan sistem realtime.
-            </p>
+              <p className="text-white/70 mt-5 max-w-2xl leading-relaxed">
+                Pilih lapangan, tentukan jadwal bermain,
+                dan lakukan booking secara online realtime.
+              </p>
+
+            </div>
 
           </div>
 
-        </div>
-
-      </section>
+        </section>
 
       {/* CONTENT */}
       <section className="max-w-7xl mx-auto px-6 py-16">
@@ -169,31 +231,30 @@ function BookingPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
                 {lapangan.map((item) => (
+
                   <div
-                    key={item.id}
+                    key={item.id_lapangan}
                     onClick={() => {
-                      setSelectedField(item.nama);
+                      setSelectedField(item);
                       setSelectedTime("");
                     }}
                     className={`rounded-2xl overflow-hidden border cursor-pointer transition ${
-                      selectedField === item.nama
+                      selectedField?.id_lapangan === item.id_lapangan
                         ? "border-blue-500 scale-[1.02]"
                         : "border-white/10 hover:border-blue-400"
                     }`}
                   >
 
                     <img
-                      src={item.img}
-                      alt={item.nama}
+                      src={item.gambar}
+                      alt={item.nama_lapangan}
                       className="w-full h-40 object-cover"
                     />
 
                     <div className="p-5">
 
                       <span className="text-xs uppercase bg-blue-600 px-3 py-1 rounded-full">
-
                         {item.kategori}
-
                       </span>
 
                       <h3 className="text-xl font-bold mt-4">
@@ -201,12 +262,13 @@ function BookingPage() {
                       </h3>
 
                       <p className="text-white/60 text-sm mt-2">
-                        {item.harga} / jam
+                        Rp {item.harga} / jam
                       </p>
 
                     </div>
 
                   </div>
+
                 ))}
 
               </div>
@@ -214,61 +276,53 @@ function BookingPage() {
             </div>
 
             {/* DETAIL LAPANGAN */}
-            <div className="bg-[#0b1f38] rounded-3xl border border-white/10 overflow-hidden">
+            {selectedField && (
+              <div className="bg-[#0b1f38] rounded-3xl border border-white/10 overflow-hidden">
 
-              <img
-                src={currentField.img}
-                alt="Lapangan"
-                className="w-full h-[320px] object-cover"
-              />
+                <img
+                  src={selectedField.gambar}
+                  alt="Lapangan"
+                  className="w-full h-[320px] object-cover"
+                />
 
-              <div className="p-8">
+                <div className="p-8">
 
-                <div className="flex flex-col md:flex-row justify-between gap-6">
+                  <div className="flex flex-col md:flex-row justify-between gap-6">
 
-                  <div>
+                    <div>
 
-                    <h2 className="text-4xl font-extrabold italic">
-                      {currentField.nama}
-                    </h2>
+                      <h2 className="text-4xl font-extrabold italic">
+                        {selectedField.nama_lapangan}
+                      </h2>
 
-                    <div className="flex items-center gap-2 text-white/60 mt-4">
+                      <div className="flex items-center gap-2 text-white/60 mt-4">
 
-                      <MapPin size={18} />
+                        <MapPin size={18} />
 
-                      {currentField.lokasi}
+                        {selectedField.lokasi}
+
+                      </div>
+
+                    </div>
+
+                    <div className="bg-blue-600 px-6 py-4 rounded-2xl h-fit">
+
+                      <p className="text-sm text-white/70">
+                        Harga Mulai
+                      </p>
+
+                      <h3 className="text-3xl font-bold mt-1">
+                        Rp {selectedField.harga}
+                      </h3>
 
                     </div>
 
                   </div>
 
-                  <div className="bg-blue-600 px-6 py-4 rounded-2xl h-fit">
-
-                    <p className="text-sm text-white/70">
-                      Harga Mulai
-                    </p>
-
-                    <h3 className="text-3xl font-bold mt-1">
-                      {currentField.harga}
-                    </h3>
-
-                    <p className="text-sm text-white/70">
-                      / jam
-                    </p>
-
-                  </div>
-
                 </div>
 
-                <p className="text-white/70 mt-8 leading-relaxed">
-                  Lapangan olahraga premium dengan fasilitas lengkap,
-                  pencahayaan profesional, area tunggu nyaman, dan
-                  sistem booking online realtime.
-                </p>
-
               </div>
-
-            </div>
+            )}
 
             {/* PILIH TANGGAL */}
             <div className="bg-[#0b1f38] border border-white/10 rounded-3xl p-8">
@@ -308,9 +362,11 @@ function BookingPage() {
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
 
                 {jadwal.map((jam, index) => {
+
                   const isBooked = bookedSlots.includes(jam);
 
                   return (
+
                     <button
                       key={index}
                       disabled={isBooked}
@@ -327,29 +383,10 @@ function BookingPage() {
                       {jam}
 
                     </button>
+
                   );
+
                 })}
-
-              </div>
-
-              {/* INFO */}
-              <div className="mt-8 flex items-center gap-6 text-sm text-white/60">
-
-                <div className="flex items-center gap-2">
-
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-
-                  Available
-
-                </div>
-
-                <div className="flex items-center gap-2">
-
-                  <div className="w-3 h-3 rounded-full bg-gray-500"></div>
-
-                  Booked
-
-                </div>
 
               </div>
 
@@ -373,7 +410,7 @@ function BookingPage() {
                   <span>Lapangan</span>
 
                   <span className="text-white font-semibold">
-                    {selectedField}
+                    {selectedField?.nama}
                   </span>
 
                 </div>
@@ -421,7 +458,7 @@ function BookingPage() {
                   </p>
 
                   <h3 className="text-4xl font-extrabold mt-2">
-                    {currentField.harga}
+                    Rp {selectedField?.harga}
                   </h3>
 
                 </div>
@@ -433,16 +470,16 @@ function BookingPage() {
 
               </div>
 
-              <button 
-  onClick={() => navigate("/Halamanpesan")}
-  className="w-full mt-10 bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold flex items-center justify-center gap-2"
->
+              <button
+                onClick={handleBooking}
+                className="w-full mt-10 bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold flex items-center justify-center gap-2"
+              >
 
-  <CreditCard size={20} />
+                <CreditCard size={20} />
 
-  Booking Sekarang
+                Booking Sekarang
 
-</button>
+              </button>
 
             </div>
 

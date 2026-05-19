@@ -13,12 +13,15 @@ useEffect(() => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   if (user) {
+
     if (user.role === "admin") {
       navigate("/dashboardadmin");
     } else {
       navigate("/dashboard");
     }
+
   }
+
 }, [navigate]);
 
   // HANDLE LOGIN

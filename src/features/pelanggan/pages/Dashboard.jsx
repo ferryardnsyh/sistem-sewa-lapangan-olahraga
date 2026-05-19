@@ -1,11 +1,38 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Dashboard() {
   const navigate = useNavigate();
   const footerRef = useRef(null);
-
+  const [totalBooking, setTotalBooking] = useState(0);
   const user = JSON.parse(localStorage.getItem("user"));
+  console.log(user);
+  const [dashboardData, setDashboardData] = useState({
+  total_booking: 0,
+  });
+
+  useEffect(() => {
+
+  if (user) {
+    fetchDashboard();
+  }
+
+}, []);
+
+const fetchDashboard = async () => {
+  try {
+
+    const response = await axios.get(
+      `http://localhost:3000/dashboard/${user?.id}`
+    );
+
+    setDashboardData(response.data);
+
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -143,7 +170,7 @@ function Dashboard() {
           {[
             {
               title: "Total Booking",
-              value: "42",
+              value: dashboardData.total_booking,
               icon: "calendar_month",
             },
             {

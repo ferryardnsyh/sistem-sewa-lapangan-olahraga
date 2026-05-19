@@ -49,7 +49,7 @@ function PembayaranPage() {
           </h1>
 
           <button 
-          onClick={() => navigate("/booking")}
+          onClick={() => navigate("/halamanpesan")}
           className="flex items-center gap-2 text-white/70 hover:text-white transition">
 
             <ArrowLeft size={18} />
