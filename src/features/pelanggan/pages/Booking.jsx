@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 
 function BookingPage() {
-
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -38,98 +37,74 @@ function BookingPage() {
   ];
 
   // ================= FETCH LAPANGAN =================
-useEffect(() => {
-  fetchLapangan();
-}, []);
-
-const fetchLapangan = async () => {
-
-  try {
-
-    const response = await axios.get(
-      "http://localhost:3000/lapangan"
-    );
-
-
-    setLapangan(response.data);
-
-    if (respone.data.length > 0) {
-      setSelectedField(respone.data[0]);
-    }
-
-  } catch (error) {
-    console.log(error);
-  }
-
-};
-
-  // ================= FETCH BOOKED SLOT =================
   useEffect(() => {
+    fetchLapangan();
+  }, []);
 
-    if (selectedField && selectedDate) {
-      fetchBookedSlots();
-    }
-
-  }, [selectedField, selectedDate]);
-
-  const fetchBookedSlots = async () => {
-
+  const fetchLapangan = async () => {
     try {
+      const response = await axios.get("http://localhost:3000/lapangan");
 
-      const response = await axios.get(
-        `http://localhost:3000/booking/jadwal/${selectedField.id_lapangan}/${selectedDate}`
-      );
+      setLapangan(response.data);
 
-      setBookedSlots(response.data);
-
+      if (respone.data.length > 0) {
+        setSelectedField(respone.data[0]);
+      }
     } catch (error) {
       console.log(error);
     }
+  };
 
+  // ================= FETCH BOOKED SLOT =================
+  useEffect(() => {
+    if (selectedField && selectedDate) {
+      fetchBookedSlots();
+    }
+  }, [selectedField, selectedDate]);
+
+  const fetchBookedSlots = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/booking/jadwal/${selectedField.id_lapangan}/${selectedDate}`,
+      );
+
+      setBookedSlots(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // ================= BOOKING =================
   const handleBooking = async () => {
-
     if (!selectedDate || !selectedTime) {
       alert("Pilih tanggal dan jam booking");
       return;
     }
 
     try {
+      const jamSelesai = `${parseInt(selectedTime.split(":")[0]) + 1}:00`;
 
-      const jamSelesai =
-        `${parseInt(selectedTime.split(":")[0]) + 1}:00`;
-
-      await axios.post(
-        "http://localhost:3000/booking",
-        {
-          user_id: user.id,
-          lapangan_id: selectedField.id_lapangan,
-          tanggal: selectedDate,
-          jam_mulai: selectedTime,
-          jam_selesai: jamSelesai,
-          total_harga: selectedField.harga,
-        }
-      );
+      await axios.post("http://localhost:3000/booking", {
+        user_id: user.id,
+        lapangan_id: selectedField.id_lapangan,
+        tanggal: selectedDate,
+        jam_mulai: selectedTime,
+        jam_selesai: jamSelesai,
+        total_harga: selectedField.harga,
+      });
 
       alert("Booking berhasil dibuat!");
 
       navigate("/halamanpesan");
-
     } catch (error) {
-
       console.log(error);
 
       alert("Booking gagal");
-
     }
-
   };
 
   return (
     <div className="min-h-screen bg-[#071426] text-white">
-
       {/* FONT */}
       <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
@@ -144,94 +119,65 @@ const fetchLapangan = async () => {
 
       {/* NAVBAR */}
       <header className="bg-[#08182d] border-b border-white/10">
-
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-
           <h1 className="text-2xl font-extrabold italic uppercase">
             Sport Center
           </h1>
 
           <nav className="hidden md:flex gap-10 text-sm text-white/80">
-
-            <Link
-              to="/dashboard"
-              className="hover:text-white transition"
-            >
+            <Link to="/dashboard" className="hover:text-white transition">
               Beranda
             </Link>
 
-            <Link
-              to="/booking"
-              className="text-blue-400"
-            >
+            <Link to="/booking" className="text-blue-400">
               Booking
             </Link>
 
-            <Link to="/halamanpesan">
-              Pesanan
-            </Link>
-
+            <Link to="/halamanpesan">Pesanan</Link>
           </nav>
-
         </div>
-
       </header>
 
       {/* HERO */}
-        <section className="relative h-[350px] overflow-hidden">
+      <section className="relative h-[350px] overflow-hidden">
         <img
-        src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80"
-        alt="Hero"
-        className="absolute inset-0 w-full h-full object-cover"
+          src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80"
+          alt="Hero"
+          className="absolute inset-0 w-full h-full object-cover"
         />
 
-          <div className="absolute inset-0 bg-[#001433]/80"></div>
+        <div className="absolute inset-0 bg-[#001433]/80"></div>
 
-          <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
+          <div>
+            <p className="uppercase tracking-[5px] text-blue-300 text-sm font-semibold">
+              Booking Lapangan
+            </p>
 
-            <div>
+            <h1 className="text-5xl md:text-6xl font-extrabold italic uppercase leading-tight mt-4">
+              Booking <br />
+              Lapangan Online
+            </h1>
 
-              <p className="uppercase tracking-[5px] text-blue-300 text-sm font-semibold">
-                Booking Lapangan
-              </p>
-
-              <h1 className="text-5xl md:text-6xl font-extrabold italic uppercase leading-tight mt-4">
-
-                Booking <br />
-                Lapangan Online
-
-              </h1>
-
-              <p className="text-white/70 mt-5 max-w-2xl leading-relaxed">
-                Pilih lapangan, tentukan jadwal bermain,
-                dan lakukan booking secara online realtime.
-              </p>
-
-            </div>
-
+            <p className="text-white/70 mt-5 max-w-2xl leading-relaxed">
+              Pilih lapangan, tentukan jadwal bermain, dan lakukan booking
+              secara online realtime.
+            </p>
           </div>
-
-        </section>
+        </div>
+      </section>
 
       {/* CONTENT */}
       <section className="max-w-7xl mx-auto px-6 py-16">
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
           {/* LEFT */}
           <div className="lg:col-span-2 space-y-8">
-
             {/* PILIH LAPANGAN */}
             <div className="bg-[#0b1f38] border border-white/10 rounded-3xl p-8">
-
-              <h2 className="text-2xl font-bold mb-8">
-                Pilih Lapangan
-              </h2>
+              <h2 className="text-2xl font-bold mb-8">Pilih Lapangan</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-
                 {lapangan.map((item) => (
-
                   <div
                     key={item.id_lapangan}
                     onClick={() => {
@@ -244,7 +190,6 @@ const fetchLapangan = async () => {
                         : "border-white/10 hover:border-blue-400"
                     }`}
                   >
-
                     <img
                       src={item.gambar}
                       alt={item.nama_lapangan}
@@ -252,33 +197,24 @@ const fetchLapangan = async () => {
                     />
 
                     <div className="p-5">
-
                       <span className="text-xs uppercase bg-blue-600 px-3 py-1 rounded-full">
                         {item.kategori}
                       </span>
 
-                      <h3 className="text-xl font-bold mt-4">
-                        {item.nama}
-                      </h3>
+                      <h3 className="text-xl font-bold mt-4">{item.nama}</h3>
 
                       <p className="text-white/60 text-sm mt-2">
                         Rp {item.harga} / jam
                       </p>
-
                     </div>
-
                   </div>
-
                 ))}
-
               </div>
-
             </div>
 
             {/* DETAIL LAPANGAN */}
             {selectedField && (
               <div className="bg-[#0b1f38] rounded-3xl border border-white/10 overflow-hidden">
-
                 <img
                   src={selectedField.gambar}
                   alt="Lapangan"
@@ -286,87 +222,60 @@ const fetchLapangan = async () => {
                 />
 
                 <div className="p-8">
-
                   <div className="flex flex-col md:flex-row justify-between gap-6">
-
                     <div>
-
                       <h2 className="text-4xl font-extrabold italic">
                         {selectedField.nama_lapangan}
                       </h2>
 
                       <div className="flex items-center gap-2 text-white/60 mt-4">
-
                         <MapPin size={18} />
 
                         {selectedField.lokasi}
-
                       </div>
-
                     </div>
 
                     <div className="bg-blue-600 px-6 py-4 rounded-2xl h-fit">
-
-                      <p className="text-sm text-white/70">
-                        Harga Mulai
-                      </p>
+                      <p className="text-sm text-white/70">Harga Mulai</p>
 
                       <h3 className="text-3xl font-bold mt-1">
                         Rp {selectedField.harga}
                       </h3>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
             )}
 
             {/* PILIH TANGGAL */}
             <div className="bg-[#0b1f38] border border-white/10 rounded-3xl p-8">
-
               <div className="flex items-center gap-3 mb-6">
-
                 <CalendarDays className="text-blue-400" />
 
-                <h2 className="text-2xl font-bold">
-                  Pilih Tanggal
-                </h2>
-
+                <h2 className="text-2xl font-bold">Pilih Tanggal</h2>
               </div>
 
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full bg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none"
+                className="w-full bg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none [&::-webkit-calendar-picker-indicator]:invert"
               />
-
             </div>
 
             {/* PILIH JAM */}
             <div className="bg-[#0b1f38] border border-white/10 rounded-3xl p-8">
-
               <div className="flex items-center gap-3 mb-8">
-
                 <Clock3 className="text-blue-400" />
 
-                <h2 className="text-2xl font-bold">
-                  Pilih Jam Booking
-                </h2>
-
+                <h2 className="text-2xl font-bold">Pilih Jam Booking</h2>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-
                 {jadwal.map((jam, index) => {
-
                   const isBooked = bookedSlots.includes(jam);
 
                   return (
-
                     <button
                       key={index}
                       disabled={isBooked}
@@ -375,223 +284,155 @@ const fetchLapangan = async () => {
                         isBooked
                           ? "bg-gray-700 border-gray-600 text-gray-400 cursor-not-allowed"
                           : selectedTime === jam
-                          ? "bg-blue-600 border-blue-500"
-                          : "bg-[#08182d] border-white/10 hover:border-blue-500"
+                            ? "bg-blue-600 border-blue-500"
+                            : "bg-[#08182d] border-white/10 hover:border-blue-500"
                       }`}
                     >
-
                       {jam}
-
                     </button>
-
                   );
-
                 })}
-
               </div>
-
             </div>
-
           </div>
 
           {/* RIGHT */}
           <div>
-
             <div className="bg-[#0b1f38] border border-white/10 rounded-3xl p-8 sticky top-10">
-
               <h2 className="text-3xl font-extrabold italic">
                 Ringkasan Booking
               </h2>
 
               <div className="space-y-6 mt-8">
-
                 <div className="flex justify-between text-white/70">
-
                   <span>Lapangan</span>
 
                   <span className="text-white font-semibold">
                     {selectedField?.nama}
                   </span>
-
                 </div>
 
                 <div className="flex justify-between text-white/70">
-
                   <span>Tanggal</span>
 
                   <span className="text-white font-semibold">
                     {selectedDate || "-"}
                   </span>
-
                 </div>
 
                 <div className="flex justify-between text-white/70">
-
                   <span>Jam</span>
 
                   <span className="text-white font-semibold">
                     {selectedTime || "-"}
                   </span>
-
                 </div>
 
                 <div className="flex justify-between text-white/70">
-
                   <span>Durasi</span>
 
-                  <span className="text-white font-semibold">
-                    1 Jam
-                  </span>
-
+                  <span className="text-white font-semibold">1 Jam</span>
                 </div>
-
               </div>
 
               <div className="border-t border-white/10 my-8"></div>
 
               <div className="flex justify-between items-center">
-
                 <div>
-
-                  <p className="text-white/60">
-                    Total Harga
-                  </p>
+                  <p className="text-white/60">Total Harga</p>
 
                   <h3 className="text-4xl font-extrabold mt-2">
                     Rp {selectedField?.harga}
                   </h3>
-
                 </div>
 
-                <BadgeDollarSign
-                  size={40}
-                  className="text-blue-400"
-                />
-
+                <BadgeDollarSign size={40} className="text-blue-400" />
               </div>
 
               <button
                 onClick={handleBooking}
                 className="w-full mt-10 bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold flex items-center justify-center gap-2"
               >
-
                 <CreditCard size={20} />
-
                 Booking Sekarang
-
               </button>
-
             </div>
-
           </div>
-
         </div>
-
       </section>
 
       {/* FOOTER */}
-      <footer
-        id="footer"
-        className="bg-[#020817] py-16 mt-16"
-      >
-
+      <footer id="footer" className="bg-[#020817] py-16 mt-16">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
-
           <div>
-
             <h1 className="text-white text-2xl font-black italic uppercase">
               Sport Center
             </h1>
 
             <p className="text-white/50 mt-5 text-sm leading-relaxed">
-              Platform booking lapangan olahraga online modern
-              dan terpercaya di Indonesia.
+              Platform booking lapangan olahraga online modern dan terpercaya di
+              Indonesia.
             </p>
-
           </div>
 
           <div>
-
             <h3 className="text-white font-bold uppercase text-sm mb-5">
               Menu
             </h3>
 
             <ul className="space-y-3 text-white/50 text-sm">
-
               <li>Home</li>
               <li>About</li>
               <li>Venue</li>
-
             </ul>
-
           </div>
 
           <div>
-
             <h3 className="text-white font-bold uppercase text-sm mb-5">
               Bantuan
             </h3>
 
             <ul className="space-y-3 text-white/50 text-sm">
-
               <li>FAQ</li>
               <li>Cara Booking</li>
               <li>Privacy Policy</li>
-
             </ul>
-
           </div>
 
           <div>
-
             <h3 className="text-white font-bold uppercase text-sm mb-5">
               Hubungi Kami
             </h3>
 
             <ul className="space-y-4 text-white/50 text-sm">
-
               <li className="flex items-center gap-2">
-
                 <span className="material-symbols-outlined text-[18px]">
                   call
                 </span>
-
                 0821-1234-5678
-
               </li>
 
               <li className="flex items-center gap-2">
-
                 <span className="material-symbols-outlined text-[18px]">
                   mail
                 </span>
-
                 info@sportcenter.com
-
               </li>
 
               <li className="flex items-center gap-2">
-
                 <span className="material-symbols-outlined text-[18px]">
                   location_on
                 </span>
-
                 Bandung, Indonesia
-
               </li>
-
             </ul>
-
           </div>
-
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
           © 2026 Sport Center. All rights reserved.
         </div>
-
       </footer>
-
     </div>
   );
 }
