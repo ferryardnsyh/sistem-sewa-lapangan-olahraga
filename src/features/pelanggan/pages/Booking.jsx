@@ -204,7 +204,7 @@ function BookingPage() {
                       <h3 className="text-xl font-bold mt-4">{item.nama}</h3>
 
                       <p className="text-white/60 text-sm mt-2">
-                        Rp {item.harga} / jam
+                        Rp {item.harga?.toLocaleString("id-ID")} / jam
                       </p>
                     </div>
                   </div>
@@ -239,7 +239,7 @@ function BookingPage() {
                       <p className="text-sm text-white/70">Harga Mulai</p>
 
                       <h3 className="text-3xl font-bold mt-1">
-                        Rp {selectedField.harga}
+                        Rp {selectedField?.harga?.toLocaleString("id-ID")}
                       </h3>
                     </div>
                   </div>
@@ -257,6 +257,7 @@ function BookingPage() {
 
               <input
                 type="date"
+                min={new Date().toISOString().split("T")[0]}
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className="w-full bg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none [&::-webkit-calendar-picker-indicator]:invert"
@@ -342,7 +343,7 @@ function BookingPage() {
                   <p className="text-white/60">Total Harga</p>
 
                   <h3 className="text-4xl font-extrabold mt-2">
-                    Rp {selectedField?.harga}
+                    Rp {selectedField?.harga?.toLocaleString("id-ID")}
                   </h3>
                 </div>
 
