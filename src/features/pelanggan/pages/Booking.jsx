@@ -20,21 +20,11 @@ function BookingPage() {
   const [selectedField, setSelectedField] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [durasi, setDurasi] = useState(1);
   const [bookedSlots, setBookedSlots] = useState([]);
-
-  // ================= JADWAL =================
-  const jadwal = [
-    "08:00",
-    "09:00",
-    "10:00",
-    "11:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "19:00",
-    "20:00",
-  ];
+  const totalHarga = selectedField
+    ? selectedField.harga * durasi
+    : 0;
 
   // ================= FETCH LAPANGAN =================
   useEffect(() => {
@@ -82,7 +72,8 @@ function BookingPage() {
     }
 
     try {
-      const jamSelesai = `${parseInt(selectedTime.split(":")[0]) + 1}:00`;
+      const jamSelesai =
+        `${parseInt(selectedTime.split(":")[0]) + durasi}:00`;
 
       await axios.post("http://localhost:3000/booking", {
         user_id: user.id,
@@ -90,7 +81,7 @@ function BookingPage() {
         tanggal: selectedDate,
         jam_mulai: selectedTime,
         jam_selesai: jamSelesai,
-        total_harga: selectedField.harga,
+        total_harga: totalHarga,
       });
 
       alert("Booking berhasil dibuat!");
@@ -184,11 +175,10 @@ function BookingPage() {
                       setSelectedField(item);
                       setSelectedTime("");
                     }}
-                    className={`rounded-2xl overflow-hidden border cursor-pointer transition ${
-                      selectedField?.id_lapangan === item.id_lapangan
-                        ? "border-blue-500 scale-[1.02]"
-                        : "border-white/10 hover:border-blue-400"
-                    }`}
+                    className={`rounded-2xl overflow-hidden border cursor-pointer transition ${selectedField?.id_lapangan === item.id_lapangan
+                      ? "border-blue-500 scale-[1.02]"
+                      : "border-white/10 hover:border-blue-400"
+                      }`}
                   >
                     <img
                       src={item.gambar}
@@ -272,27 +262,64 @@ function BookingPage() {
                 <h2 className="text-2xl font-bold">Pilih Jam Booking</h2>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {jadwal.map((jam, index) => {
-                  const isBooked = bookedSlots.includes(jam);
+              <div className="space-y-5">
 
-                  return (
-                    <button
-                      key={index}
-                      disabled={isBooked}
-                      onClick={() => setSelectedTime(jam)}
-                      className={`py-4 rounded-2xl border transition font-semibold ${
-                        isBooked
-                          ? "bg-gray-700 border-gray-600 text-gray-400 cursor-not-allowed"
-                          : selectedTime === jam
-                            ? "bg-blue-600 border-blue-500"
-                            : "bg-[#08182d] border-white/10 hover:border-blue-500"
-                      }`}
-                    >
-                      {jam}
-                    </button>
-                  );
-                })}
+                {/* INPUT JAM */}
+                <input
+                  type="time"
+                  min="08:00"
+                  max="22:00"
+                  value={selectedTime}
+                  onChange={(e) => {
+
+                    const jam = e.target.value;
+
+                    if (jam < "08:00" || jam > "22:00") {
+
+                      alert("Jam booking hanya tersedia dari 08:00 sampai 22:00");
+
+                      setSelectedTime("");
+
+                      return;
+
+                    }
+
+                    setSelectedTime(jam);
+
+                  }}
+                  className="w-full bg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none"
+                />
+
+
+                {/* PILIH DURASI */}
+                <select
+                  value={durasi}
+                  onChange={(e) => setDurasi(Number(e.target.value))}
+                  className="w-fullbg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-blue-500"
+                >
+
+                  <option value={1}>
+                    1 Jam
+                  </option>
+
+                  <option value={2}>
+                    2 Jam
+                  </option>
+
+                  <option value={3}>
+                    3 Jam
+                  </option>
+
+                  <option value={4}>
+                    4 Jam
+                  </option>
+
+                  <option value={5}>
+                    5 Jam
+                  </option>
+
+                </select>
+
               </div>
             </div>
           </div>
@@ -330,22 +357,20 @@ function BookingPage() {
                 </div>
 
                 <div className="flex justify-between text-white/70">
-                  <span>Durasi</span>
 
-                  <span className="text-white font-semibold">1 Jam</span>
+                  <span>Durasi</span>
+                  <span className="text-white font-semibold">
+                    {durasi} Jam
+                  </span>
                 </div>
               </div>
 
               <div className="border-t border-white/10 my-8"></div>
 
               <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-white/60">Total Harga</p>
-
-                  <h3 className="text-4xl font-extrabold mt-2">
-                    Rp {selectedField?.harga?.toLocaleString("id-ID")}
-                  </h3>
-                </div>
+                <h3 className="text-4xl font-extrabold mt-2">
+                  Rp {totalHarga.toLocaleString("id-ID")}
+                </h3>
 
                 <BadgeDollarSign size={40} className="text-blue-400" />
               </div>

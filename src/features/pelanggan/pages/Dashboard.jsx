@@ -9,30 +9,30 @@ function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user"));
   console.log(user);
   const [dashboardData, setDashboardData] = useState({
-  total_booking: 0,
+    total_booking: 0,
   });
 
   useEffect(() => {
 
-  if (user) {
-    fetchDashboard();
-  }
+    if (user) {
+      fetchDashboard();
+    }
 
-}, []);
+  }, []);
 
-const fetchDashboard = async () => {
-  try {
+  const fetchDashboard = async () => {
+    try {
 
-    const response = await axios.get(
-      `http://localhost:3000/dashboard/${user?.id}`
-    );
+      const response = await axios.get(
+        `http://localhost:3000/dashboard/${user?.id}`
+      );
 
-    setDashboardData(response.data);
+      setDashboardData(response.data);
 
-  } catch (error) {
-    console.log(error);
-  }
-};
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -330,9 +330,9 @@ const fetchDashboard = async () => {
                 Booking lapangan baru
               </h3>
 
-              <button 
-              onClick={() => navigate("/booking")}
-              className="w-full mt-8 bg-blue-600 hover:bg-blue-700 rounded-2xl px-6 py-5 flex items-center justify-between transition shadow-lg">
+              <button
+                onClick={() => navigate("/booking")}
+                className="w-full mt-8 bg-blue-600 hover:bg-blue-700 rounded-2xl px-6 py-5 flex items-center justify-between transition shadow-lg">
 
                 <div className="flex items-center gap-3">
 

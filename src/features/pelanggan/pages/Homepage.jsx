@@ -85,8 +85,8 @@ function Home() {
               Home
             </a>
 
-            <a href="#about" 
-            className="hover:text-gray-300 transition">
+            <a href="#about"
+              className="hover:text-gray-300 transition">
               About
             </a>
 
@@ -110,9 +110,8 @@ function Home() {
         {heroImages.map((img, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              currentSlide === index ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === index ? "opacity-100" : "opacity-0"
+              }`}
           >
 
             <div
@@ -157,8 +156,8 @@ function Home() {
               <div className="flex flex-wrap gap-4 mt-10">
 
                 <button
-                onClick={() => navigate ("/login")}
-                className="bg-[#2453D2] hover:bg-blue-700 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
+                  onClick={() => navigate("/login")}
+                  className="bg-[#2453D2] hover:bg-blue-700 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
 
                   <span className="material-symbols-outlined text-[20px]">
                     calendar_month
@@ -177,11 +176,10 @@ function Home() {
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`transition-all rounded-full ${
-                      currentSlide === index
+                    className={`transition-all rounded-full ${currentSlide === index
                         ? "w-10 h-3 bg-white"
                         : "w-3 h-3 bg-white/40"
-                    }`}
+                      }`}
                   />
                 ))}
 
@@ -242,9 +240,9 @@ function Home() {
                     {item.desc}
                   </p>
 
-                  <button 
-                  onClick={() => navigate("/login")}
-                  className="mt-4 text-[#2453D2] text-xs font-bold flex items-center gap-1 hover:gap-3 transition-all">
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="mt-4 text-[#2453D2] text-xs font-bold flex items-center gap-1 hover:gap-3 transition-all">
 
                     Booking
 
@@ -361,9 +359,9 @@ function Home() {
 
             </div>
 
-            <button 
-            onClick={() => navigate("/login")}
-            className="bg-white text-[#001433] px-8 py-4 rounded-xl font-bold hover:scale-105 transition flex items-center gap-2">
+            <button
+              onClick={() => navigate("/login")}
+              className="bg-white text-[#001433] px-8 py-4 rounded-xl font-bold hover:scale-105 transition flex items-center gap-2">
 
               Booking Sekarang
 
@@ -381,7 +379,7 @@ function Home() {
 
       {/* FOOTER */}
       <footer id="about"
-      className="bg-[#020817] py-16">
+        className="bg-[#020817] py-16">
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 

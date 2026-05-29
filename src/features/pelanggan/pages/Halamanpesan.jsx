@@ -145,11 +145,10 @@ function HalamanPesanan() {
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status)}
-                  className={`px-5 py-3 rounded-2xl font-semibold transition ${
-                    statusFilter === status
+                  className={`px-5 py-3 rounded-2xl font-semibold transition ${statusFilter === status
                       ? "bg-blue-600"
                       : "bg-[#08182d] border border-white/10 hover:border-blue-500"
-                  }`}
+                    }`}
                 >
                   {status}
                 </button>

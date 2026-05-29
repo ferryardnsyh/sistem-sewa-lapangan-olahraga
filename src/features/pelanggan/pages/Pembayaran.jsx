@@ -48,9 +48,9 @@ function PembayaranPage() {
             SPORT CENTER
           </h1>
 
-          <button 
-          onClick={() => navigate("/halamanpesan")}
-          className="flex items-center gap-2 text-white/70 hover:text-white transition">
+          <button
+            onClick={() => navigate("/halamanpesan")}
+            className="flex items-center gap-2 text-white/70 hover:text-white transition">
 
             <ArrowLeft size={18} />
 
@@ -123,11 +123,10 @@ function PembayaranPage() {
                 {/* QRIS */}
                 <button
                   onClick={() => setMetode("qris")}
-                  className={`w-full rounded-2xl border p-5 transition text-left ${
-                    metode === "qris"
+                  className={`w-full rounded-2xl border p-5 transition text-left ${metode === "qris"
                       ? "border-blue-500 bg-blue-500/10"
                       : "border-white/10 bg-[#08182d]"
-                  }`}
+                    }`}
                 >
 
                   <div className="flex items-center justify-between">
@@ -165,11 +164,10 @@ function PembayaranPage() {
                 {/* TRANSFER */}
                 <button
                   onClick={() => setMetode("transfer")}
-                  className={`w-full rounded-2xl border p-5 transition text-left ${
-                    metode === "transfer"
+                  className={`w-full rounded-2xl border p-5 transition text-left ${metode === "transfer"
                       ? "border-blue-500 bg-blue-500/10"
                       : "border-white/10 bg-[#08182d]"
-                  }`}
+                    }`}
                 >
 
                   <div className="flex items-center justify-between">

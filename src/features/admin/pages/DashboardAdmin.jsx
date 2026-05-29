@@ -23,7 +23,7 @@ function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#071426] text-white flex flex-col">
-      
+
       {/* FONT */}
       <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
@@ -35,7 +35,7 @@ function AdminDashboard() {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
         rel="stylesheet"
       />
-      
+
       {/* NAVBAR */}
       <header className="w-full border-b border-white/10 bg-[#08182d]">
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
@@ -69,7 +69,7 @@ function AdminDashboard() {
               onClick={handleLogout}
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-sm flex items-center gap-2 transition shadow-lg"
             >
-            Logout
+              Logout
             </button>
           </nav>
 
@@ -349,7 +349,7 @@ function AdminDashboard() {
 
       {/* FOOTER */}
       <footer
-        
+
         className="bg-[#020817] py-16 mt-16"
       >
 

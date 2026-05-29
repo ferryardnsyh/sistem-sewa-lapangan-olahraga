@@ -9,20 +9,20 @@ function Login() {
   const [password, setPassword] = useState("");
 
   // AUTO LOGIN CHECK
-useEffect(() => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
 
-  if (user) {
+    if (user) {
 
-    if (user.role === "admin") {
-      navigate("/dashboardadmin");
-    } else {
-      navigate("/dashboard");
+      if (user.role === "admin") {
+        navigate("/dashboardadmin");
+      } else {
+        navigate("/dashboard");
+      }
+
     }
 
-  }
-
-}, [navigate]);
+  }, [navigate]);
 
   // HANDLE LOGIN
   const handleLogin = async () => {

@@ -322,7 +322,7 @@ function Register() {
       </div>
 
       <footer id="kontak"
-      className="relative z-20 border-b border-white/10">
+        className="relative z-20 border-b border-white/10">
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 
@@ -391,7 +391,7 @@ function Register() {
 
               <li className="flex items-center gap-2">
 
-              <span className="material-symbols-outlined text-[18px]">
+                <span className="material-symbols-outlined text-[18px]">
                   mail
                 </span>
 
