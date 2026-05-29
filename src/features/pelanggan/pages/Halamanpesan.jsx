@@ -146,8 +146,8 @@ function HalamanPesanan() {
                   key={status}
                   onClick={() => setStatusFilter(status)}
                   className={`px-5 py-3 rounded-2xl font-semibold transition ${statusFilter === status
-                      ? "bg-blue-600"
-                      : "bg-[#08182d] border border-white/10 hover:border-blue-500"
+                    ? "bg-blue-600"
+                    : "bg-[#08182d] border border-white/10 hover:border-blue-500"
                     }`}
                 >
                   {status}
@@ -279,14 +279,17 @@ function HalamanPesanan() {
 
                     {/* ACTION */}
                     <div className="flex flex-col gap-4 lg:w-[220px]">
+
                       <button
-                        onClick={() => navigate("/pembayaran")}
+                        onClick={() => navigate(`/pembayaran/${item.id_booking}`)}
                         className="bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold"
                       >
                         Lihat Detail
                       </button>
 
-                      <button className="bg-[#08182d] border border-white/10 hover:border-blue-500 transition py-4 rounded-2xl font-bold">
+                      <button
+                        className="bg-[#08182d] border border-white/10 hover:border-blue-500 transition py-4 rounded-2xl font-bold"
+                      >
                         Download Invoice
                       </button>
                     </div>
@@ -296,15 +299,15 @@ function HalamanPesanan() {
             </div>
           ))}
         </div>
-      </section>
+      </section >
 
       {/* FOOTER */}
-      <footer className="bg-[#020817] py-16 mt-16">
+      < footer className="bg-[#020817] py-16 mt-16" >
         <div className="max-w-7xl mx-auto px-6 text-center text-white/40 text-sm">
           © 2026 Sport Center. All rights reserved.
         </div>
-      </footer>
-    </div>
+      </footer >
+    </div >
   );
 }
 

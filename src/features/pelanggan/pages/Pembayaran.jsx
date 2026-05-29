@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+
 import {
   ArrowLeft,
   CreditCard,
@@ -124,8 +126,8 @@ function PembayaranPage() {
                 <button
                   onClick={() => setMetode("qris")}
                   className={`w-full rounded-2xl border p-5 transition text-left ${metode === "qris"
-                      ? "border-blue-500 bg-blue-500/10"
-                      : "border-white/10 bg-[#08182d]"
+                    ? "border-blue-500 bg-blue-500/10"
+                    : "border-white/10 bg-[#08182d]"
                     }`}
                 >
 
@@ -165,8 +167,8 @@ function PembayaranPage() {
                 <button
                   onClick={() => setMetode("transfer")}
                   className={`w-full rounded-2xl border p-5 transition text-left ${metode === "transfer"
-                      ? "border-blue-500 bg-blue-500/10"
-                      : "border-white/10 bg-[#08182d]"
+                    ? "border-blue-500 bg-blue-500/10"
+                    : "border-white/10 bg-[#08182d]"
                     }`}
                 >
 

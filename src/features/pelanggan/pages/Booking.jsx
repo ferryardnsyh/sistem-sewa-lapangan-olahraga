@@ -37,7 +37,7 @@ function BookingPage() {
 
       setLapangan(response.data);
 
-      if (respone.data.length > 0) {
+      if (response.data.length > 0) {
         setSelectedField(respone.data[0]);
       }
     } catch (error) {
@@ -81,6 +81,7 @@ function BookingPage() {
         tanggal: selectedDate,
         jam_mulai: selectedTime,
         jam_selesai: jamSelesai,
+        durasi: durasi,
         total_harga: totalHarga,
       });
 
@@ -88,9 +89,13 @@ function BookingPage() {
 
       navigate("/halamanpesan");
     } catch (error) {
-      console.log(error);
 
-      alert("Booking gagal");
+      console.log(error.response?.data);
+
+      alert(
+        error.response?.data?.message || "Booking gagal"
+      );
+
     }
   };
 
@@ -295,7 +300,7 @@ function BookingPage() {
                 <select
                   value={durasi}
                   onChange={(e) => setDurasi(Number(e.target.value))}
-                  className="w-fullbg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-blue-500"
+                  className="w-full bg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-blue-500"
                 >
 
                   <option value={1}>

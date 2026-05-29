@@ -1,12 +1,9 @@
 require("dotenv").config();
-
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -33,278 +30,333 @@ app.get("/", (req, res) => {
 
 // ================= REGISTER =================
 app.post("/register", async (req, res) => {
-  console.log("🔥 KENA HIT REGISTER");
-  console.log("DATA:", req.body);
-
-  const { nama_user, email, no_telp, password, role } = req.body;
-
+  const {
+    nama_user,
+    email,
+    no_telp,
+    password,
+    role
+  } = req.body;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    const hashedPassword =
+      await bcrypt.hash(password, 10);
     db.query(
-      `INSERT INTO user
-      (nama_user, email, no_telp, password, role)
-      VALUES (?, ?, ?, ?, ?)`,
-      [nama_user, email, no_telp, hashedPassword, role || "user"],
-      (err, result) => {
+      `
+      INSERT INTO user
+      (
+        nama_user,
+        email,
+        no_telp,
+        password,
+        role
+      )
+      VALUES (?, ?, ?, ?, ?)
+      `,
+      [
+        nama_user,
+        email,
+        no_telp,
+        hashedPassword,
+        role || "user"
+      ],
+      (err) => {
         if (err) {
-          console.log("ERROR DB:", err);
-
           if (err.code === "ER_DUP_ENTRY") {
             return res.status(400).json({
-              message: "Email sudah digunakan",
+              message: "Email sudah digunakan"
             });
           }
-
           return res.status(500).json({
-            message: "Terjadi kesalahan server",
+            message: "Register gagal"
           });
         }
-
         res.json({
-          message: "Register berhasil",
+          message: "Register berhasil"
         });
-      },
+      }
     );
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({
-      message: "Server error",
+      message: "Server Error"
     });
   }
 });
 
 // ================= LOGIN =================
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-
+  const {
+    email,
+    password
+  } = req.body;
   db.query(
     "SELECT * FROM user WHERE email = ?",
     [email],
-    async (err, results) => {
+    async (err, result) => {
       if (err) {
         return res.status(500).json({
-          message: "DB Error",
+          message: "DB Error"
         });
-      }
 
-      if (results.length === 0) {
+      }
+      if (result.length === 0) {
+
         return res.status(400).json({
-          message: "Email tidak ditemukan",
+          message: "Email tidak ditemukan"
         });
+
       }
-
-      const user = results[0];
-
-      const isMatch = await bcrypt.compare(password, user.password);
-
-      if (!isMatch) {
+      const user = result[0];
+      const check =
+        await bcrypt.compare(
+          password,
+          user.password
+        );
+      if (!check) {
         return res.status(400).json({
-          message: "Password salah",
+          message: "Password salah"
         });
       }
-
       res.json({
         message: "Login berhasil",
         user: {
           id: user.id_user,
           nama_user: user.nama_user,
           email: user.email,
-          role: user.role,
-        },
+          role: user.role
+        }
       });
-    },
+    }
   );
 });
 
-// ================= BOOKING =================
+// ================= CREATE BOOKING =================
 app.post("/booking", (req, res) => {
-  const { user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, total_harga } =
-    req.body;
-
-  // VALIDASI
+  const {
+    user_id,
+    lapangan_id,
+    tanggal,
+    jam_mulai,
+    jam_selesai,
+    durasi,
+    total_harga
+  } = req.body;
   if (
     !user_id ||
     !lapangan_id ||
     !tanggal ||
     !jam_mulai ||
     !jam_selesai ||
+    !durasi ||
     !total_harga
   ) {
     return res.status(400).json({
-      message: "Data booking tidak lengkap",
+      message: "Data booking tidak lengkap"
     });
   }
 
-  // CEK JADWAL SUDAH DIBOOKING
+  // cek bentrok jadwal
   db.query(
-    `SELECT * FROM booking
+    `
+    SELECT *
+    FROM booking
     WHERE lapangan_id = ?
     AND tanggal = ?
-    AND jam_mulai = ?`,
-    [lapangan_id, tanggal, jam_mulai],
+    AND jam_mulai = ?
+    `,
+    [
+      lapangan_id,
+      tanggal,
+      jam_mulai
+    ],
     (err, result) => {
       if (err) {
-        console.log(err);
-
         return res.status(500).json({
-          message: "DB Error",
+          message: "DB Error"
         });
       }
-
-      // JIKA SUDAH ADA
       if (result.length > 0) {
         return res.status(400).json({
-          message: "Jadwal sudah dibooking",
+          message: "Jam sudah dibooking"
         });
       }
-
-      // INSERT BOOKING
       db.query(
-        `INSERT INTO booking
+        `
+        INSERT INTO booking
         (
           user_id,
           lapangan_id,
           tanggal,
           jam_mulai,
           jam_selesai,
+          durasi,
           total_harga,
           status
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
+        `,
         [
           user_id,
           lapangan_id,
           tanggal,
           jam_mulai,
           jam_selesai,
-          total_harga,
-          "pending",
+          durasi,
+          total_harga
         ],
         (err, result) => {
           if (err) {
             console.log(err);
-
             return res.status(500).json({
-              message: "Gagal menyimpan booking",
+              message: "Gagal menyimpan booking"
             });
-          }
 
+          }
           res.json({
             message: "Booking berhasil dibuat",
-            booking_id: result.insertId,
+            booking_id: result.insertId
           });
-        },
+        }
       );
-    },
-  );
-});
-
-// ================= DASHBOARD =================
-app.get("/dashboard/:id", (req, res) => {
-  const userId = req.params.id;
-
-  db.query(
-    `SELECT COUNT(*) AS total_booking
-    FROM booking
-    WHERE user_id = ?`,
-    [userId],
-    (err, result) => {
-      if (err) {
-        return res.status(500).json({
-          message: "DB Error",
-        });
-      }
-
-      res.json({
-        total_booking: result[0].total_booking,
-      });
-    },
-  );
-});
-
-// ================= GET LAPANGAN =================
-app.get("/lapangan", (req, res) => {
-  db.query("SELECT * FROM lapangan", (err, result) => {
-    if (err) {
-      return res.status(500).json({
-        message: "DB Error",
-      });
     }
-
-    res.json(result);
-  });
-});
-
-// ================= GET BOOKED SLOT =================
-app.get("/booking/jadwal/:lapangan_id/:tanggal", (req, res) => {
-  const { lapangan_id, tanggal } = req.params;
-
-  db.query(
-    `SELECT jam_mulai
-    FROM booking
-    WHERE lapangan_id = ?
-    AND tanggal = ?`,
-    [lapangan_id, tanggal],
-    (err, result) => {
-      if (err) {
-        return res.status(500).json({
-          message: "DB Error",
-        });
-      }
-
-      const booked = result.map((item) => item.jam_mulai.slice(0, 5));
-
-      res.json(booked);
-    },
   );
 });
 
 // ================= GET PESANAN USER =================
 app.get("/booking/user/:id", (req, res) => {
   const userId = req.params.id;
-
   db.query(
     `
-    SELECT 
+    SELECT
       booking.id,
       booking.tanggal,
       booking.jam_mulai,
       booking.jam_selesai,
+      booking.durasi,
       booking.total_harga,
       booking.status,
-
       lapangan.nama_lapangan,
       lapangan.kategori,
       lapangan.lokasi,
       lapangan.gambar
-
     FROM booking
-
     JOIN lapangan
-    ON booking.lapangan_id = lapangan.id_lapangan
-
+    ON booking.lapangan_id =
+    lapangan.id_lapangan
     WHERE booking.user_id = ?
-
     ORDER BY booking.id DESC
+
     `,
     [userId],
+
     (err, result) => {
       if (err) {
         console.log(err);
-
         return res.status(500).json({
-          message: "DB Error",
+          message: "Gagal mengambil pesanan"
         });
       }
-
       res.json(result);
-    },
+    }
   );
 });
 
-// ================= RUN SERVER =================
+// ================= DETAIL BOOKING PEMBAYARAN =================
+app.get("/booking/detail/:id", (req, res) => {
+  const id = req.params.id;
+  db.query(
+    `
+    SELECT
+      booking.id,
+      booking.tanggal,
+      booking.jam_mulai,
+      booking.jam_selesai,
+      booking.durasi,
+      booking.total_harga,
+      booking.status,
+      lapangan.nama_lapangan,
+      lapangan.kategori,
+      lapangan.gambar
+    FROM booking
+    JOIN lapangan
+    ON booking.lapangan_id =
+    lapangan.id_lapangan
+    WHERE booking.id = ?
+
+    `,
+    [id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          message: "DB Error"
+        });
+      }
+      res.json(result[0]);
+    }
+  );
+});
+
+// ================= LAPANGAN =================
+app.get("/lapangan", (req, res) => {
+  db.query(
+    "SELECT * FROM lapangan",
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          message: "DB Error"
+        });
+
+      }
+      res.json(result);
+    }
+  );
+});
+
+// ================= DASHBOARD =================
+app.get("/dashboard/:id", (req, res) => {
+  db.query(
+    `
+    SELECT COUNT(*) AS total_booking
+    FROM booking
+    WHERE user_id = ?
+    `,
+
+    [req.params.id],
+
+
+    (err, result) => {
+
+
+      if (err) {
+
+        return res.status(500).json({
+          message: "DB Error"
+        });
+
+      }
+
+
+      res.json({
+
+        total_booking:
+          result[0].total_booking
+
+      });
+
+
+    }
+
+
+  );
+
+
+});
+
+// ================= RUN =================
 app.listen(process.env.PORT, () => {
-  console.log(`Server jalan di http://localhost:${process.env.PORT}`);
+
+  console.log(
+    `Server jalan di http://localhost:${process.env.PORT}`
+  );
+
 });
