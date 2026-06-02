@@ -10,6 +10,9 @@ import Halamanpesan from "./features/pelanggan/pages/Halamanpesan"
 import Pembayaran from "./features/pelanggan/pages/Pembayaran"
 
 import DashboardAdmin from "./features/admin/pages/DashboardAdmin"
+import DataBooking from "./features/admin/pages/DataBooking"
+import DataUser from "./features/admin/pages/DataUser"
+import LaporanAdmin from "./features/admin/pages/LaporanAdmin"
 
 import ProtectedRoute from "./components/ProtectedRoute"
 
@@ -86,6 +89,20 @@ function App() {
           element={<DashboardAdmin />}
         />
 
+        <Route
+          path="/admin/booking"
+          element={<DataBooking />}
+        />
+
+        <Route
+          path="/admin/users"
+          element={<DataUser />}
+        />
+
+        <Route
+          path="/admin/laporan"
+          element={<LaporanAdmin />}
+        />
 
       </Routes>
 

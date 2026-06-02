@@ -61,15 +61,7 @@ function Dashboard() {
 
           {/* LOGO */}
           <div className="flex items-center gap-3">
-
-            <div className="w-11 h-11 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg">
-
-              <span className="material-symbols-outlined text-white">
-                sports_soccer
-              </span>
-
-            </div>
-
+            
             <div>
 
               <h1 className="text-white text-2xl font-black uppercase leading-none font-[Montserrat]">
@@ -178,11 +170,7 @@ function Dashboard() {
               value: "3",
               icon: "inventory",
             },
-            {
-              title: "Poin Reward",
-              value: "1.250",
-              icon: "verified",
-            },
+            
           ].map((item, index) => (
             <div
               key={index}
