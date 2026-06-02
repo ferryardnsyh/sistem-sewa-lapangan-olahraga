@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+
 import {
   ArrowLeft,
   CreditCard,
@@ -11,7 +14,7 @@ import {
 
 function PembayaranPage() {
   const [metode, setMetode] = useState("qris");
-
+  const navigate = useNavigate();
   const booking = {
     lapangan: "Arena Futsal Utama",
     tanggal: "20 Mei 2025",
@@ -24,7 +27,19 @@ function PembayaranPage() {
   const total = booking.harga + booking.admin;
 
   return (
+
     <div className="min-h-screen bg-[#071426] text-white">
+      {/* FONT */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+
+      {/* MATERIAL ICON */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        rel="stylesheet"
+      />
 
       {/* NAVBAR */}
       <header className="bg-[#08182d] border-b border-white/10">
@@ -35,7 +50,9 @@ function PembayaranPage() {
             SPORT CENTER
           </h1>
 
-          <button className="flex items-center gap-2 text-white/70 hover:text-white transition">
+          <button
+            onClick={() => navigate("/halamanpesan")}
+            className="flex items-center gap-2 text-white/70 hover:text-white transition">
 
             <ArrowLeft size={18} />
 
@@ -108,11 +125,10 @@ function PembayaranPage() {
                 {/* QRIS */}
                 <button
                   onClick={() => setMetode("qris")}
-                  className={`w-full rounded-2xl border p-5 transition text-left ${
-                    metode === "qris"
-                      ? "border-blue-500 bg-blue-500/10"
-                      : "border-white/10 bg-[#08182d]"
-                  }`}
+                  className={`w-full rounded-2xl border p-5 transition text-left ${metode === "qris"
+                    ? "border-blue-500 bg-blue-500/10"
+                    : "border-white/10 bg-[#08182d]"
+                    }`}
                 >
 
                   <div className="flex items-center justify-between">
@@ -150,11 +166,10 @@ function PembayaranPage() {
                 {/* TRANSFER */}
                 <button
                   onClick={() => setMetode("transfer")}
-                  className={`w-full rounded-2xl border p-5 transition text-left ${
-                    metode === "transfer"
-                      ? "border-blue-500 bg-blue-500/10"
-                      : "border-white/10 bg-[#08182d]"
-                  }`}
+                  className={`w-full rounded-2xl border p-5 transition text-left ${metode === "transfer"
+                    ? "border-blue-500 bg-blue-500/10"
+                    : "border-white/10 bg-[#08182d]"
+                    }`}
                 >
 
                   <div className="flex items-center justify-between">
@@ -401,64 +416,95 @@ function PembayaranPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-[#08182d] border-t border-white/10 mt-10">
+      <footer
+        id="footer"
+        className="bg-[#020817] py-16 mt-16"
+      >
 
-        <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 
           <div>
 
-            <h2 className="text-3xl font-extrabold italic">
-              SPORT CENTER
-            </h2>
+            <h1 className="text-white text-2xl font-black italic uppercase">
+              Sport Center
+            </h1>
 
-            <p className="text-white/60 mt-5 leading-relaxed">
-              Platform booking lapangan olahraga modern dengan fasilitas
-              premium dan pelayanan terbaik.
+            <p className="text-white/50 mt-5 text-sm leading-relaxed">
+              Platform booking lapangan olahraga online modern
+              dan terpercaya di Indonesia.
             </p>
 
           </div>
 
           <div>
 
-            <h3 className="text-blue-400 uppercase tracking-widest font-semibold mb-5">
-              Navigasi
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Menu
             </h3>
 
-            <ul className="space-y-3 text-white/70">
+            <ul className="space-y-3 text-white/50 text-sm">
+
               <li>Home</li>
-              <li>Booking</li>
-              <li>Jadwal</li>
-              <li>Kontak</li>
+              <li>About</li>
+              <li>Venue</li>
+
             </ul>
 
           </div>
 
           <div>
 
-            <h3 className="text-blue-400 uppercase tracking-widest font-semibold mb-5">
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
               Bantuan
             </h3>
 
-            <ul className="space-y-3 text-white/70">
+            <ul className="space-y-3 text-white/50 text-sm">
+
               <li>FAQ</li>
               <li>Cara Booking</li>
-              <li>Kebijakan Privasi</li>
-              <li>Syarat & Ketentuan</li>
+              <li>Privacy Policy</li>
+
             </ul>
 
           </div>
 
           <div>
 
-            <h3 className="text-blue-400 uppercase tracking-widest font-semibold mb-5">
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
               Hubungi Kami
             </h3>
 
-            <ul className="space-y-4 text-white/70">
+            <ul className="space-y-4 text-white/50 text-sm">
 
-              <li>📍 Bandung, Indonesia</li>
-              <li>📞 0821-1234-5678</li>
-              <li>✉ info@sportcenter.com</li>
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  call
+                </span>
+
+                0821-1234-5678
+
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  mail
+                </span>
+
+                info@sportcenter.com
+
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  location_on
+                </span>
+
+                Bandung, Indonesia
+
+              </li>
 
             </ul>
 
@@ -466,8 +512,8 @@ function PembayaranPage() {
 
         </div>
 
-        <div className="border-t border-white/10 text-center py-6 text-white/40 text-sm">
-          © 2025 Sport Center. All Rights Reserved.
+        <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>

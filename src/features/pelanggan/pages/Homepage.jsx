@@ -85,20 +85,9 @@ function Home() {
               Home
             </a>
 
-            <a href="#" className="hover:text-gray-300 transition">
+            <a href="#about"
+              className="hover:text-gray-300 transition">
               About
-            </a>
-
-            <a href="#" className="hover:text-gray-300 transition">
-              Fasilitas
-            </a>
-
-            <a href="#" className="hover:text-gray-300 transition">
-              Harga
-            </a>
-
-            <a href="#" className="hover:text-gray-300 transition">
-              Contact
             </a>
 
           </nav>
@@ -121,9 +110,8 @@ function Home() {
         {heroImages.map((img, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              currentSlide === index ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === index ? "opacity-100" : "opacity-0"
+              }`}
           >
 
             <div
@@ -167,23 +155,15 @@ function Home() {
 
               <div className="flex flex-wrap gap-4 mt-10">
 
-                <button className="bg-[#2453D2] hover:bg-blue-700 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
+                <button
+                  onClick={() => navigate("/login")}
+                  className="bg-[#2453D2] hover:bg-blue-700 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
 
                   <span className="material-symbols-outlined text-[20px]">
                     calendar_month
                   </span>
 
                   Booking Sekarang
-
-                </button>
-
-                <button className="border border-white/30 hover:bg-white/10 text-white px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition">
-
-                  <span className="material-symbols-outlined text-[20px]">
-                    grid_view
-                  </span>
-
-                  Lihat Jadwal
 
                 </button>
 
@@ -196,11 +176,10 @@ function Home() {
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`transition-all rounded-full ${
-                      currentSlide === index
+                    className={`transition-all rounded-full ${currentSlide === index
                         ? "w-10 h-3 bg-white"
                         : "w-3 h-3 bg-white/40"
-                    }`}
+                      }`}
                   />
                 ))}
 
@@ -261,7 +240,9 @@ function Home() {
                     {item.desc}
                   </p>
 
-                  <button className="mt-4 text-[#2453D2] text-xs font-bold flex items-center gap-1 hover:gap-3 transition-all">
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="mt-4 text-[#2453D2] text-xs font-bold flex items-center gap-1 hover:gap-3 transition-all">
 
                     Booking
 
@@ -378,7 +359,9 @@ function Home() {
 
             </div>
 
-            <button className="bg-white text-[#001433] px-8 py-4 rounded-xl font-bold hover:scale-105 transition flex items-center gap-2">
+            <button
+              onClick={() => navigate("/login")}
+              className="bg-white text-[#001433] px-8 py-4 rounded-xl font-bold hover:scale-105 transition flex items-center gap-2">
 
               Booking Sekarang
 
@@ -395,7 +378,8 @@ function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-[#020817] py-16">
+      <footer id="about"
+        className="bg-[#020817] py-16">
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
 
@@ -489,7 +473,7 @@ function Home() {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
-          © 2024 Sport Center. All rights reserved.
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>

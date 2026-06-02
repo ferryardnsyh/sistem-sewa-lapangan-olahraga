@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   LayoutDashboard,
   CalendarDays,
@@ -12,8 +14,27 @@ import {
 } from "lucide-react";
 
 function AdminDashboard() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/homepage");
+  };
+
   return (
     <div className="min-h-screen bg-[#071426] text-white flex flex-col">
+
+      {/* FONT */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+
+      {/* MATERIAL ICON */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        rel="stylesheet"
+      />
 
       {/* NAVBAR */}
       <header className="w-full border-b border-white/10 bg-[#08182d]">
@@ -43,6 +64,13 @@ function AdminDashboard() {
             <a href="#" className="hover:text-white transition">
               Kontak
             </a>
+
+            <button
+              onClick={handleLogout}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-sm flex items-center gap-2 transition shadow-lg"
+            >
+              Logout
+            </button>
           </nav>
 
         </div>
@@ -320,107 +348,104 @@ function AdminDashboard() {
       </div>
 
       {/* FOOTER */}
-      <footer className="bg-[#08182d] border-t border-white/10 mt-auto">
+      <footer
 
-        <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+        className="bg-[#020817] py-16 mt-16"
+      >
 
-          {/* BRAND */}
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+
           <div>
 
-            <h2 className="text-3xl font-extrabold italic">
-              SPORT CENTER
-            </h2>
+            <h1 className="text-white text-2xl font-black italic uppercase">
+              Sport Center
+            </h1>
 
-            <p className="text-white/60 mt-4 leading-relaxed">
-              Pusat olahraga terlengkap dan modern dengan standar internasional.
-              Kami menyediakan fasilitas terbaik untuk atlet profesional dan komunitas olahraga.
+            <p className="text-white/50 mt-5 text-sm leading-relaxed">
+              Platform booking lapangan olahraga online modern
+              dan terpercaya di Indonesia.
             </p>
 
-            <div className="flex gap-3 mt-6">
-
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                f
-              </div>
-
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                in
-              </div>
-
-            </div>
-
           </div>
 
-          {/* NAVIGASI */}
           <div>
 
-            <h3 className="uppercase text-blue-400 font-semibold tracking-widest mb-6">
-              Navigasi
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Menu
             </h3>
 
-            <ul className="space-y-4 text-white/70">
-              <li>Beranda</li>
-              <li>Fasilitas Kami</li>
-              <li>Daftar Harga</li>
-              <li>Tentang Kami</li>
+            <ul className="space-y-3 text-white/50 text-sm">
+
+              <li>Home</li>
+              <li>About</li>
+              <li>Venue</li>
+
             </ul>
 
           </div>
 
-          {/* INFORMASI */}
           <div>
 
-            <h3 className="uppercase text-blue-400 font-semibold tracking-widest mb-6">
-              Informasi
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
+              Bantuan
             </h3>
 
-            <ul className="space-y-4 text-white/70">
-              <li>Syarat & Ketentuan</li>
-              <li>Kebijakan Privasi</li>
-              <li>Panduan Booking</li>
-              <li>Bantuan</li>
+            <ul className="space-y-3 text-white/50 text-sm">
+
+              <li>FAQ</li>
+              <li>Cara Booking</li>
+              <li>Privacy Policy</li>
+
             </ul>
 
           </div>
 
-          {/* CONTACT */}
           <div>
 
-            <h3 className="uppercase text-blue-400 font-semibold tracking-widest mb-6">
+            <h3 className="text-white font-bold uppercase text-sm mb-5">
               Hubungi Kami
             </h3>
 
-            <div className="space-y-5 text-white/70">
+            <ul className="space-y-4 text-white/50 text-sm">
 
-              <div className="flex gap-3">
-                <MapPin size={18} />
-                <p>
-                  Bandung, Indonesia
-                </p>
-              </div>
+              <li className="flex items-center gap-2">
 
-              <div className="flex gap-3">
-                <Phone size={18} />
-                <p>
-                  0821-1234-5678
-                </p>
-              </div>
+                <span className="material-symbols-outlined text-[18px]">
+                  call
+                </span>
 
-              <div className="flex gap-3">
-                <Mail size={18} />
-                <p>
-                  info@sportcenter.com
-                </p>
-              </div>
+                0821-1234-5678
 
-            </div>
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  mail
+                </span>
+
+                info@sportcenter.com
+
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  location_on
+                </span>
+
+                Bandung, Indonesia
+
+              </li>
+
+            </ul>
 
           </div>
 
         </div>
 
-        {/* COPYRIGHT */}
-        <div className="border-t border-white/10 py-6 text-center text-white/40 text-sm">
-          © 2026 SPORT CENTER - ALL RIGHTS RESERVED.
+        <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>

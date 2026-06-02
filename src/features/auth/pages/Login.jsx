@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,12 +13,19 @@ function Login() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (user) {
-      navigate("/dashboard");
+
+      if (user.role === "admin") {
+        navigate("/dashboardadmin");
+      } else {
+        navigate("/dashboard");
+      }
+
     }
+
   }, [navigate]);
 
   // HANDLE LOGIN
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email || !password) {
@@ -28,14 +36,39 @@ function Login() {
       return alert("Format email tidak valid!");
     }
 
-    const user = {
-      nama: "",
-      email: email,
-    };
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        {
+          email,
+          password,
+        }
+      );
 
-    localStorage.setItem("user", JSON.stringify(user));
+      const user = response.data.user;
 
-    navigate("/dashboard");
+      localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+      );
+
+      alert(response.data.message);
+
+      if (user.role === "admin") {
+        navigate("/dashboardadmin");
+      } else {
+        navigate("/dashboard");
+      }
+
+    } catch (error) {
+
+      if (error.response) {
+        alert(error.response.data.message);
+      } else {
+        alert("Server error");
+      }
+
+    }
   };
 
   return (
@@ -78,23 +111,17 @@ function Login() {
           {/* MENU */}
           <nav className="hidden md:flex items-center gap-10 text-white/70 text-sm">
 
-            <a href="/" className="hover:text-white transition">
+            <Link
+              to="/homepage"
+              className="hover:text-gray-300 transition"
+            >
               Home
-            </a>
+            </Link>
 
-            <a href="#" className="hover:text-white transition">
-              About
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              Fasilitas
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              Harga
-            </a>
-
-            <a href="#" className="hover:text-white transition">
+            <a
+              href="#kontak"
+              className="hover:text-white transition"
+            >
               Kontak
             </a>
 
@@ -157,9 +184,7 @@ function Login() {
               </label>
 
               <button className="text-blue-400 text-sm hover:text-blue-300 transition">
-
                 Lupa Kata Sandi?
-
               </button>
 
             </div>
@@ -239,19 +264,23 @@ function Login() {
       </div>
 
       {/* ================= FOOTER ================= */}
-      <footer className="relative z-10 border-t border-white/10 mt-10">
+      <footer
+        id="kontak"
+        className="relative z-20 border-b border-white/10"
+      >
 
-        <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
 
           {/* LOGO */}
           <div>
 
-            <h1 className="text-white text-3xl font-black uppercase italic font-[Montserrat]">
-              SPORT CENTER
+            <h1 className="text-white text-2xl font-black italic uppercase">
+              Sport Center
             </h1>
 
-            <p className="text-white/50 mt-5 leading-relaxed text-sm">
-              Partner terpercaya untuk fasilitas olahraga premium dan manajemen aktivitas atletik Anda.
+            <p className="text-white/50 mt-5 text-sm leading-relaxed">
+              Platform booking lapangan olahraga online modern
+              dan terpercaya di Indonesia.
             </p>
 
           </div>
@@ -264,12 +293,9 @@ function Login() {
             </h3>
 
             <ul className="space-y-3 text-white/50 text-sm">
-
               <li>Home</li>
               <li>About</li>
-              <li>Fasilitas</li>
-              <li>Harga</li>
-
+              <li>Venue</li>
             </ul>
 
           </div>
@@ -282,26 +308,51 @@ function Login() {
             </h3>
 
             <ul className="space-y-3 text-white/50 text-sm">
-
-              <li>Kontak</li>
-              <li>Cara Booking</li>
               <li>FAQ</li>
-
+              <li>Cara Booking</li>
+              <li>Privacy Policy</li>
             </ul>
 
           </div>
 
-          {/* LEGAL */}
+          {/* KONTAK */}
           <div>
 
             <h3 className="text-white font-bold uppercase text-sm mb-5">
-              Legal
+              Hubungi Kami
             </h3>
 
-            <ul className="space-y-3 text-white/50 text-sm">
+            <ul className="space-y-4 text-white/50 text-sm">
 
-              <li>Syarat & Ketentuan</li>
-              <li>Kebijakan Privasi</li>
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  call
+                </span>
+
+                0821-1234-5678
+
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  mail
+                </span>
+
+                info@sportcenter.com
+
+              </li>
+
+              <li className="flex items-center gap-2">
+
+                <span className="material-symbols-outlined text-[18px]">
+                  location_on
+                </span>
+
+                Bandung, Indonesia
+
+              </li>
 
             </ul>
 
@@ -310,8 +361,8 @@ function Login() {
         </div>
 
         {/* COPYRIGHT */}
-        <div className="border-t border-white/10 py-5 text-center text-white/30 text-sm">
-          © 2024 Sport Center. All rights reserved.
+        <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-sm">
+          © 2026 Sport Center. All rights reserved.
         </div>
 
       </footer>

@@ -1,21 +1,48 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Dashboard() {
   const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem("user"));
   const footerRef = useRef(null);
+  const [totalBooking, setTotalBooking] = useState(0);
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log(user);
+  const [dashboardData, setDashboardData] = useState({
+    total_booking: 0,
+  });
+
+  useEffect(() => {
+
+    if (user) {
+      fetchDashboard();
+    }
+
+  }, []);
+
+  const fetchDashboard = async () => {
+    try {
+
+      const response = await axios.get(
+        `http://localhost:3000/dashboard/${user?.id}`
+      );
+
+      setDashboardData(response.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    navigate("/login");
+    navigate("/homepage");
   };
 
   return (
     <div className="min-h-screen bg-[#EEF2F7] font-[Inter]">
 
-      {/* GOOGLE FONT */}
+      {/* FONT */}
       <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
         rel="stylesheet"
@@ -80,13 +107,10 @@ function Dashboard() {
               onClick={handleLogout}
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-sm flex items-center gap-2 transition shadow-lg"
             >
-
               <span className="material-symbols-outlined text-[18px]">
                 logout
               </span>
-
               Logout
-
             </button>
 
           </div>
@@ -127,16 +151,6 @@ function Dashboard() {
 
               <div className="flex flex-wrap gap-4 mt-8">
 
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-semibold flex items-center gap-2 transition shadow-lg">
-
-                  <span className="material-symbols-outlined">
-                    add_circle
-                  </span>
-
-                  Booking Sekarang
-
-                </button>
-
               </div>
 
             </div>
@@ -156,7 +170,7 @@ function Dashboard() {
           {[
             {
               title: "Total Booking",
-              value: "42",
+              value: dashboardData.total_booking,
               icon: "calendar_month",
             },
             {
@@ -299,96 +313,7 @@ function Dashboard() {
 
                   </div>
 
-                  <div className="flex flex-wrap gap-4 mt-10">
-
-                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-semibold transition shadow-lg">
-                      Detail Booking
-                    </button>
-
-                    <button className="border border-gray-200 hover:bg-gray-100 text-gray-700 px-8 py-4 rounded-2xl font-semibold transition">
-                      Reschedule
-                    </button>
-
-                  </div>
-
                 </div>
-
-              </div>
-
-            </div>
-
-            {/* RIWAYAT */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-
-              <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-
-                <div>
-
-                  <h3 className="text-2xl font-bold text-[#001433]">
-                    Riwayat Booking
-                  </h3>
-
-                  <p className="text-gray-400 text-sm mt-1">
-                    Aktivitas booking terbaru
-                  </p>
-
-                </div>
-
-                <button className="text-blue-600 text-sm font-semibold">
-                  Lihat Semua
-                </button>
-
-              </div>
-
-              <div className="divide-y">
-
-                {[
-                  {
-                    icon: "sports_soccer",
-                    title: "Mini Soccer A",
-                    date: "20 Mei 2026",
-                  },
-                  {
-                    icon: "sports_basketball",
-                    title: "Basket Hall VIP",
-                    date: "15 Mei 2026",
-                  },
-                ].map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between px-8 py-6 hover:bg-gray-50 transition"
-                  >
-
-                    <div className="flex items-center gap-5">
-
-                      <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center">
-
-                        <span className="material-symbols-outlined text-blue-600">
-                          {item.icon}
-                        </span>
-
-                      </div>
-
-                      <div>
-
-                        <h4 className="font-bold text-[#001433]">
-                          {item.title}
-                        </h4>
-
-                        <p className="text-sm text-gray-400 mt-1">
-                          {item.date}
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                    <span className="bg-green-100 text-green-600 text-xs font-bold px-4 py-2 rounded-full">
-                      SELESAI
-                    </span>
-
-                  </div>
-                ))}
 
               </div>
 
@@ -399,14 +324,15 @@ function Dashboard() {
           {/* RIGHT */}
           <div className="space-y-8">
 
-            {/* QUICK ACTION */}
             <div className="bg-[#001433] rounded-3xl p-8 text-white shadow-xl">
 
               <h3 className="text-2xl font-bold">
                 Booking lapangan baru
               </h3>
 
-              <button className="w-full mt-8 bg-blue-600 hover:bg-blue-700 rounded-2xl px-6 py-5 flex items-center justify-between transition shadow-lg">
+              <button
+                onClick={() => navigate("/booking")}
+                className="w-full mt-8 bg-blue-600 hover:bg-blue-700 rounded-2xl px-6 py-5 flex items-center justify-between transition shadow-lg">
 
                 <div className="flex items-center gap-3">
 
@@ -423,43 +349,6 @@ function Dashboard() {
                 </span>
 
               </button>
-
-            </div>
-
-            {/* INFO */}
-            <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-
-              <h3 className="text-2xl font-bold text-[#001433]">
-                Informasi
-              </h3>
-
-              <div className="space-y-5 mt-6">
-
-                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-
-                  <h4 className="font-bold text-blue-700">
-                    Promo Member
-                  </h4>
-
-                  <p className="text-sm text-gray-500 mt-2">
-                    Dapatkan diskon 20% untuk booking malam hari.
-                  </p>
-
-                </div>
-
-                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5">
-
-                  <h4 className="font-bold text-[#001433]">
-                    Jam Operasional
-                  </h4>
-
-                  <p className="text-sm text-gray-500 mt-2">
-                    Senin - Minggu • 08:00 - 23:00
-                  </p>
-
-                </div>
-
-              </div>
 
             </div>
 
