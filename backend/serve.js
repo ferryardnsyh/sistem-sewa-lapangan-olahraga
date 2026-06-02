@@ -106,6 +106,16 @@ app.post("/login", (req, res) => {
 
       }
       const user = result[0];
+
+      // CEK STATUS AKUN
+      if (user.status === "inactive") {
+
+        return res.status(403).json({
+          message: "Akun Anda telah dinonaktifkan oleh admin"
+        });
+
+      }
+
       const check =
         await bcrypt.compare(
           password,
@@ -314,18 +324,29 @@ app.get("/lapangan", (req, res) => {
 
 // ================= DASHBOARD =================
 app.get("/dashboard/:id", (req, res) => {
-  db.query(
-    `
-    SELECT COUNT(*) AS total_booking
+
+  const userId = req.params.id;
+
+  const sql = `
+    SELECT
+      COUNT(*) AS total_booking,
+
+      SUM(
+        CASE
+          WHEN status = 'pending'
+          THEN 1
+          ELSE 0
+        END
+      ) AS booking_aktif
+
     FROM booking
     WHERE user_id = ?
-    `,
+  `;
 
-    [req.params.id],
-
-
+  db.query(
+    sql,
+    [userId],
     (err, result) => {
-
 
       if (err) {
 
@@ -335,20 +356,16 @@ app.get("/dashboard/:id", (req, res) => {
 
       }
 
-
       res.json({
-
         total_booking:
-          result[0].total_booking
+          result[0].total_booking,
 
+        booking_aktif:
+          result[0].booking_aktif || 0
       });
 
-
     }
-
-
   );
-
 
 });
 
@@ -386,27 +403,60 @@ app.put("/booking/bayar/:id", (req, res) => {
 // ================= ADMIN DASHBOARD =================
 app.get("/admin/dashboard", (req, res) => {
 
-  const sql = `
+  const summarySql = `
     SELECT
-      (SELECT COUNT(*) FROM booking) AS total_booking,
-      (SELECT COUNT(*) FROM user) AS total_user,
-      (SELECT COUNT(*) FROM lapangan) AS total_lapangan,
-      (SELECT IFNULL(SUM(total_harga),0) FROM booking) AS total_pendapatan
+      (SELECT COUNT(*) FROM booking) total_booking,
+      (SELECT COUNT(*) FROM booking WHERE status='pending') total_pending,
+      (SELECT COUNT(*) FROM booking WHERE status='selesai') total_selesai,
+      (SELECT IFNULL(SUM(total_harga),0) FROM booking) total_pendapatan
   `;
 
-  db.query(sql, (err, result) => {
+  db.query(summarySql, (err, summary) => {
 
-    if (err) {
+    if (err) return res.status(500).json(err);
 
-      console.log(err);
+    const bookingSql = `
+      SELECT
+        u.nama_user,
+        l.nama_lapangan,
+        b.status
+      FROM booking b
+      JOIN user u
+        ON b.user_id = u.id_user
+      JOIN lapangan l
+        ON b.lapangan_id = l.id_lapangan
+      ORDER BY b.id DESC
+      LIMIT 3
+    `;
 
-      return res.status(500).json({
-        message: "Database Error"
+    db.query(bookingSql, (err2, bookings) => {
+
+      if (err2)
+        return res.status(500).json(err2);
+
+      const userSql = `
+        SELECT
+          nama_user,
+          email
+        FROM user
+        ORDER BY id_user DESC
+        LIMIT 3
+      `;
+
+      db.query(userSql, (err3, users) => {
+
+        if (err3)
+          return res.status(500).json(err3);
+
+        res.json({
+          summary: summary[0],
+          recentBookings: bookings,
+          recentUsers: users
+        });
+
       });
 
-    }
-
-    res.json(result[0]);
+    });
 
   });
 
@@ -482,6 +532,67 @@ app.put("/admin/bookings/:id", (req, res) => {
 
     }
   );
+
+});
+
+// ================= ADMIN USERS =================
+app.get("/admin/users", (req, res) => {
+
+  const sql = `
+    SELECT
+      id_user,
+      nama_user,
+      email,
+      no_telp,
+      role,
+      status,
+      created_at
+    FROM user
+    ORDER BY id_user DESC
+  `;
+
+  db.query(sql, (err, result) => {
+
+    if (err) {
+
+      console.log(err);
+
+      return res.status(500).json({
+        message: "Database Error"
+      });
+
+    }
+
+    res.json(result);
+
+  });
+
+});
+
+// ================= STATUS USER KELOLA USER =================
+app.put("/admin/users/status/:id", (req, res) => {
+
+  const id = req.params.id;
+  const { status } = req.body;
+
+  const sql = `
+    UPDATE user
+    SET status = ?
+    WHERE id_user = ?
+  `;
+
+  db.query(sql, [status, id], (err, result) => {
+
+    if (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+
+    res.json({
+      message: "Status user berhasil diubah"
+    });
+
+  });
 
 });
 
