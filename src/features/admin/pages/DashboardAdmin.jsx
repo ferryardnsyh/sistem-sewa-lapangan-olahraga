@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -11,6 +12,44 @@ import {
 
 function AdminDashboard() {
   const navigate = useNavigate();
+  const [dashboard, setDashboard] = useState({
+    total_booking: 0,
+    total_user: 0,
+    total_lapangan: 0,
+    total_pendapatan: 0,
+  });
+  useEffect(() => {
+    getDashboard();
+  }, []);
+
+  const getDashboard = async () => {
+
+    try {
+
+      const response = await axios.get(
+        "http://localhost:3000/admin/dashboard"
+      );
+
+      setDashboard(response.data.summary);
+
+      setRecentBookings(
+        response.data.recentBookings
+      );
+
+      setRecentUsers(
+        response.data.recentUsers
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
+  const [recentBookings, setRecentBookings] = useState([]);
+  const [recentUsers, setRecentUsers] = useState([]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -68,14 +107,6 @@ function AdminDashboard() {
             Data User
           </button>
 
-          <button
-            onClick={() => navigate("/admin/laporan")}
-            className="w-full flex items-center gap-3 hover:bg-white/5 px-4 py-3 rounded-xl transition"
-          >
-            <FileText size={18} />
-            Laporan
-          </button>
-
         </div>
 
         {/* LOGOUT */}
@@ -110,7 +141,7 @@ function AdminDashboard() {
         </div>
 
         {/* ================= STATISTICS ================= */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
 
           {/* TOTAL BOOKING */}
           <div className="bg-[#0b1f38] border border-white/10 rounded-2xl p-6">
@@ -120,7 +151,7 @@ function AdminDashboard() {
             </p>
 
             <h3 className="text-4xl font-black mt-3">
-              128
+              {dashboard.total_booking}
             </h3>
 
           </div>
@@ -132,8 +163,8 @@ function AdminDashboard() {
               Menunggu Konfirmasi
             </p>
 
-            <h3 className="text-4xl font-black mt-3 text-yellow-400">
-              14
+            <h3 className="text-4xl font-black mt-3">
+              {dashboard.total_pending}
             </h3>
 
           </div>
@@ -145,8 +176,23 @@ function AdminDashboard() {
               Booking Selesai
             </p>
 
-            <h3 className="text-4xl font-black mt-3 text-green-400">
-              102
+            <h3 className="text-4xl font-black mt-3">
+              {dashboard.total_selesai}
+            </h3>
+
+          </div>
+
+          {/* PENDAPATAN */}
+          <div className="bg-[#0b1f38] border border-white/10 rounded-2xl p-6">
+
+            <p className="text-white/50 text-sm uppercase">
+              Pendapatan
+            </p>
+
+            <h3 className="text-xl font-black mt-3">
+              Rp {Number(
+                dashboard.total_pendapatan
+              ).toLocaleString("id-ID")}
             </h3>
 
           </div>
@@ -183,50 +229,40 @@ function AdminDashboard() {
 
               <tbody>
 
-                <tr className="border-t border-white/5">
+                {recentBookings.map((item, index) => (
 
-                  <td className="px-6 py-4">Asep</td>
-                  <td className="px-6 py-4">Futsal A</td>
+                  <tr
+                    key={index}
+                    className="border-t border-white/5"
+                  >
 
-                  <td className="px-6 py-4">
+                    <td className="px-6 py-4">
+                      {item.nama_user}
+                    </td>
 
-                    <span className="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-xs">
-                      Pending
-                    </span>
+                    <td className="px-6 py-4">
+                      {item.nama_lapangan}
+                    </td>
 
-                  </td>
+                    <td className="px-6 py-4">
 
-                </tr>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs
+                            ${item.status === "pending"
+                            ? "bg-yellow-500/20 text-yellow-400"
+                            : item.status === "selesai"
+                              ? "bg-green-500/20 text-green-400"
+                              : "bg-blue-500/20 text-blue-400"
+                        }`}
+                      >
+                        {item.status}
+                      </span>
 
-                <tr className="border-t border-white/5">
+                    </td>
 
-                  <td className="px-6 py-4">Budi</td>
-                  <td className="px-6 py-4">Badminton B</td>
+                  </tr>
 
-                  <td className="px-6 py-4">
-
-                    <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs">
-                      Lunas
-                    </span>
-
-                  </td>
-
-                </tr>
-
-                <tr className="border-t border-white/5">
-
-                  <td className="px-6 py-4">Rina</td>
-                  <td className="px-6 py-4">Basket VIP</td>
-
-                  <td className="px-6 py-4">
-
-                    <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-xs">
-                      Selesai
-                    </span>
-
-                  </td>
-
-                </tr>
+                ))}
 
               </tbody>
 
@@ -247,59 +283,33 @@ function AdminDashboard() {
 
             <div className="p-6 space-y-5">
 
-              <div className="flex items-center justify-between">
+              {recentUsers.map((user, index) => (
 
-                <div>
+                <div
+                  key={index}
+                  className="flex items-center justify-between border-b border-white/5 pb-4"
+                >
 
-                  <h4 className="font-medium">
-                    Ahmad Fauzi
-                  </h4>
+                  <div>
 
-                  <p className="text-sm text-white/50">
-                    ahmad@gmail.com
-                  </p>
+                    <h4 className="font-medium">
+                      {user.nama_user}
+                    </h4>
 
-                </div>
+                    <p className="text-sm text-white/50">
+                      {user.email}
+                    </p>
 
-                <CheckCircle size={18} className="text-green-400" />
+                  </div>
 
-              </div>
-
-              <div className="flex items-center justify-between">
-
-                <div>
-
-                  <h4 className="font-medium">
-                    Rina Putri
-                  </h4>
-
-                  <p className="text-sm text-white/50">
-                    rina@gmail.com
-                  </p>
+                  <CheckCircle
+                    size={18}
+                    className="text-green-400"
+                  />
 
                 </div>
 
-                <CheckCircle size={18} className="text-green-400" />
-
-              </div>
-
-              <div className="flex items-center justify-between">
-
-                <div>
-
-                  <h4 className="font-medium">
-                    Budi Santoso
-                  </h4>
-
-                  <p className="text-sm text-white/50">
-                    budi@gmail.com
-                  </p>
-
-                </div>
-
-                <CheckCircle size={18} className="text-green-400" />
-
-              </div>
+              ))}
 
             </div>
 

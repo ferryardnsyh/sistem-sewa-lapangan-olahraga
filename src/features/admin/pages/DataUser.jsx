@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Search,
   Eye,
@@ -9,35 +10,57 @@ import {
 
 function DataUser() {
   const [search, setSearch] = useState("");
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    getUsers();
+  }, []);
 
-  const users = [
-    {
-      id: 1,
-      nama: "Asep Tatang",
-      email: "asep@gmail.com",
-      role: "customer",
-      status: "active",
-    },
-    {
-      id: 2,
-      nama: "Budi Santoso",
-      email: "budi@gmail.com",
-      role: "customer",
-      status: "inactive",
-    },
-    {
-      id: 3,
-      nama: "Admin Utama",
-      email: "admin@sportcenter.com",
-      role: "admin",
-      status: "active",
-    },
-  ];
+  const getUsers = async () => {
+
+    try {
+
+      const response = await axios.get(
+        "http://localhost:3000/admin/users"
+      );
+
+      setUsers(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
+  const updateStatus = async (id, status) => {
+
+    try {
+
+      await axios.put(
+        `http://localhost:3000/admin/users/status/${id}`,
+        { status }
+      );
+
+      getUsers();
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
 
   const filteredUsers = users.filter(
     (user) =>
-      user.nama.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase())
+      user.nama_user
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      user.email
+        .toLowerCase()
+        .includes(search.toLowerCase())
   );
 
   return (
@@ -63,7 +86,7 @@ function DataUser() {
           </p>
 
           <h2 className="text-4xl font-black mt-3">
-            320
+            {users.length}
           </h2>
         </div>
 
@@ -72,8 +95,12 @@ function DataUser() {
             User Aktif
           </p>
 
-          <h2 className="text-4xl font-black text-green-400 mt-3">
-            280
+          <h2 className="text-4xl font-black">
+            {
+              users.filter(
+                (user) => user.status === "active"
+              ).length
+            }
           </h2>
         </div>
 
@@ -83,7 +110,11 @@ function DataUser() {
           </p>
 
           <h2 className="text-4xl font-black text-red-400 mt-3">
-            40
+            {
+              users.filter(
+                (user) => user.status === "inactive"
+              ).length
+            }
           </h2>
         </div>
 
@@ -153,16 +184,16 @@ function DataUser() {
             {filteredUsers.map((user) => (
 
               <tr
-                key={user.id}
+                key={user.id_user}
                 className="border-t border-white/5 hover:bg-white/5"
               >
 
                 <td className="px-6 py-5">
-                  {user.id}
+                  {user.id_user}
                 </td>
 
                 <td className="px-6 py-5">
-                  {user.nama}
+                  {user.nama_user}
                 </td>
 
                 <td className="px-6 py-5">
@@ -189,7 +220,7 @@ function DataUser() {
 
                 <td className="px-6 py-5">
 
-                  <div className="flex justify-center gap-2">
+                  <div className="flex items-center justify-center gap-2">
 
                     <button
                       className="bg-cyan-600 hover:bg-cyan-700 p-2 rounded-lg"
@@ -198,12 +229,18 @@ function DataUser() {
                     </button>
 
                     <button
+                      onClick={() =>
+                        updateStatus(user.id_user, "active")
+                      }
                       className="bg-green-600 hover:bg-green-700 p-2 rounded-lg"
                     >
                       <UserCheck size={18} />
                     </button>
 
                     <button
+                      onClick={() =>
+                        updateStatus(user.id_user, "inactive")
+                      }
                       className="bg-red-600 hover:bg-red-700 p-2 rounded-lg"
                     >
                       <UserX size={18} />

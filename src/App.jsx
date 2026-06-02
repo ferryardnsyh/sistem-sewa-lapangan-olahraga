@@ -12,7 +12,6 @@ import Pembayaran from "./features/pelanggan/pages/Pembayaran"
 import DashboardAdmin from "./features/admin/pages/DashboardAdmin"
 import DataBooking from "./features/admin/pages/DataBooking"
 import DataUser from "./features/admin/pages/DataUser"
-import LaporanAdmin from "./features/admin/pages/LaporanAdmin"
 
 import ProtectedRoute from "./components/ProtectedRoute"
 
@@ -86,31 +85,37 @@ function App() {
 
         <Route
           path="/dashboardadmin"
-          element={<DashboardAdmin />}
+          element={
+            <ProtectedRoute>
+              <DashboardAdmin />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/admin/booking"
-          element={<DataBooking />}
+          element={
+            <ProtectedRoute>
+              <DataBooking />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/admin/users"
-          element={<DataUser />}
-        />
-
-        <Route
-          path="/admin/laporan"
-          element={<LaporanAdmin />}
+          element={
+            <ProtectedRoute>
+              <DataUser />
+            </ProtectedRoute>
+          }
         />
 
       </Routes>
+
 
     </BrowserRouter>
 
   )
 
 }
-
-
 export default App

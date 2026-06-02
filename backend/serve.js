@@ -3,6 +3,7 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
+const midtransClient = require("midtrans-client");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -106,6 +107,16 @@ app.post("/login", (req, res) => {
 
       }
       const user = result[0];
+
+      // CEK STATUS AKUN
+      if (user.status === "inactive") {
+
+        return res.status(403).json({
+          message: "Akun Anda telah dinonaktifkan oleh admin"
+        });
+
+      }
+
       const check =
         await bcrypt.compare(
           password,
@@ -314,18 +325,29 @@ app.get("/lapangan", (req, res) => {
 
 // ================= DASHBOARD =================
 app.get("/dashboard/:id", (req, res) => {
-  db.query(
-    `
-    SELECT COUNT(*) AS total_booking
+
+  const userId = req.params.id;
+
+  const sql = `
+    SELECT
+      COUNT(*) AS total_booking,
+
+      SUM(
+        CASE
+          WHEN status = 'pending'
+          THEN 1
+          ELSE 0
+        END
+      ) AS booking_aktif
+
     FROM booking
     WHERE user_id = ?
-    `,
+  `;
 
-    [req.params.id],
-
-
+  db.query(
+    sql,
+    [userId],
     (err, result) => {
-
 
       if (err) {
 
@@ -335,20 +357,359 @@ app.get("/dashboard/:id", (req, res) => {
 
       }
 
+      res.json({
+        total_booking:
+          result[0].total_booking,
+
+        booking_aktif:
+          result[0].booking_aktif || 0
+      });
+
+    }
+  );
+
+});
+
+// ================= BAYAR BOOKING =================
+app.put("/booking/bayar/:id", (req, res) => {
+
+  const id = req.params.id;
+
+  db.query(
+    `
+    UPDATE booking
+    SET status = 'selesai'
+    WHERE id = ?
+    `,
+    [id],
+    (err, result) => {
+
+      if (err) {
+        console.log(err);
+
+        return res.status(500).json({
+          message: "Gagal melakukan pembayaran"
+        });
+      }
 
       res.json({
+        message: "Pembayaran berhasil"
+      });
 
-        total_booking:
-          result[0].total_booking
+    }
+  );
+
+});
+
+// ================= ADMIN DASHBOARD =================
+app.get("/admin/dashboard", (req, res) => {
+
+  const summarySql = `
+    SELECT
+      (SELECT COUNT(*) FROM booking) total_booking,
+      (SELECT COUNT(*) FROM booking WHERE status='pending') total_pending,
+      (SELECT COUNT(*) FROM booking WHERE status='selesai') total_selesai,
+      (SELECT IFNULL(SUM(total_harga),0) FROM booking) total_pendapatan
+  `;
+
+  db.query(summarySql, (err, summary) => {
+
+    if (err) return res.status(500).json(err);
+
+    const bookingSql = `
+      SELECT
+        u.nama_user,
+        l.nama_lapangan,
+        b.status
+      FROM booking b
+      JOIN user u
+        ON b.user_id = u.id_user
+      JOIN lapangan l
+        ON b.lapangan_id = l.id_lapangan
+      ORDER BY b.id DESC
+      LIMIT 3
+    `;
+
+    db.query(bookingSql, (err2, bookings) => {
+
+      if (err2)
+        return res.status(500).json(err2);
+
+      const userSql = `
+        SELECT
+          nama_user,
+          email
+        FROM user
+        ORDER BY id_user DESC
+        LIMIT 3
+      `;
+
+      db.query(userSql, (err3, users) => {
+
+        if (err3)
+          return res.status(500).json(err3);
+
+        res.json({
+          summary: summary[0],
+          recentBookings: bookings,
+          recentUsers: users
+        });
 
       });
 
+    });
+
+  });
+
+});
+
+// ================= ADMIN BOOKINGS =================
+app.get("/admin/bookings", (req, res) => {
+
+  const sql = `
+    SELECT
+      b.id,
+      u.nama_user,
+      l.nama_lapangan,
+      b.tanggal,
+      b.jam_mulai,
+      b.jam_selesai,
+      b.total_harga,
+      b.status
+    FROM booking b
+    INNER JOIN user u
+      ON b.user_id = u.id_user
+    INNER JOIN lapangan l
+      ON b.lapangan_id = l.id_lapangan
+    ORDER BY b.id DESC
+  `;
+
+  db.query(sql, (err, result) => {
+
+    if (err) {
+
+      console.log(err);
+
+      return res.status(500).json({
+        message: "Database Error"
+      });
 
     }
 
+    res.json(result);
 
+  });
+
+});
+
+// ================= UPDATE STATUS BOOKING =================
+app.put("/admin/bookings/:id", (req, res) => {
+
+  const id = req.params.id;
+  const { status } = req.body;
+
+  db.query(
+    `
+    UPDATE booking
+    SET status = ?
+    WHERE id = ?
+    `,
+    [status, id],
+    (err, result) => {
+
+      if (err) {
+
+        console.log(err);
+
+        return res.status(500).json({
+          message: "Gagal update status"
+        });
+
+      }
+
+      res.json({
+        message: "Status berhasil diubah"
+      });
+
+    }
   );
 
+});
+
+// ================= ADMIN USERS =================
+app.get("/admin/users", (req, res) => {
+
+  const sql = `
+    SELECT
+      id_user,
+      nama_user,
+      email,
+      no_telp,
+      role,
+      status,
+      created_at
+    FROM user
+    ORDER BY id_user DESC
+  `;
+
+  db.query(sql, (err, result) => {
+
+    if (err) {
+
+      console.log(err);
+
+      return res.status(500).json({
+        message: "Database Error"
+      });
+
+    }
+
+    res.json(result);
+
+  });
+
+});
+
+// ================= STATUS USER KELOLA USER =================
+app.put("/admin/users/status/:id", (req, res) => {
+
+  const id = req.params.id;
+  const { status } = req.body;
+
+  const sql = `
+    UPDATE user
+    SET status = ?
+    WHERE id_user = ?
+  `;
+
+  db.query(sql, [status, id], (err, result) => {
+
+    if (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+
+    res.json({
+      message: "Status user berhasil diubah"
+    });
+
+  });
+
+});
+
+// ================= MIDTRANS =================
+const snap = new midtransClient.Snap({
+  isProduction: false,
+  serverKey: process.env.MIDTRANS_SERVER_KEY,
+});
+
+// ================= CREATE MIDTRANS PAYMENT =================
+app.post("/create-transaction", async (req, res) => {
+  try {
+
+    console.log("BODY MASUK:");
+    console.log(req.body);
+
+    const booking_id = req.body.booking_id;
+    const total_harga = Number(req.body.total_harga);
+    const nama_user = req.body.nama_user;
+
+    console.log("booking_id =", booking_id);
+    console.log("total_harga =", total_harga);
+    console.log("nama_user =", nama_user);
+
+    const parameter = {
+      transaction_details: {
+        order_id: `BOOKING-${booking_id}-${Date.now()}`,
+        gross_amount: total_harga
+      },
+
+      customer_details: {
+        first_name: nama_user
+      }
+    };
+
+    console.log("PARAMETER MIDTRANS:");
+    console.log(JSON.stringify(parameter, null, 2));
+
+    const transaction =
+      await snap.createTransaction(parameter);
+
+    res.json({
+      token: transaction.token
+    });
+
+  } catch (error) {
+
+    console.log("MIDTRANS ERROR:");
+    console.log(error);
+
+    res.status(500).json({
+      message: "Gagal membuat transaksi"
+    });
+
+  }
+});
+
+// ================= MIDTRANS CALLBACK =================
+app.post("/payment/notification", async (req, res) => {
+
+  try {
+
+    const statusResponse =
+      await snap.transaction.notification(
+        req.body
+      );
+
+    const orderId =
+      statusResponse.order_id;
+
+    const transactionStatus =
+      statusResponse.transaction_status;
+
+    const bookingId =
+      orderId.split("-")[1];
+
+    if (
+      transactionStatus === "settlement"
+    ) {
+
+      db.query(
+        `
+        UPDATE booking
+        SET status='selesai'
+        WHERE id=?
+        `,
+        [bookingId]
+      );
+
+    }
+
+    if (
+      transactionStatus === "expire" ||
+      transactionStatus === "cancel"
+    ) {
+
+      db.query(
+        `
+        UPDATE booking
+        SET status='cancelled'
+        WHERE id=?
+        `,
+        [bookingId]
+      );
+
+    }
+
+    res.status(200).send("OK");
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json(error);
+
+  }
 
 });
 

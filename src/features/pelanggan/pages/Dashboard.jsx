@@ -61,7 +61,7 @@ function Dashboard() {
 
           {/* LOGO */}
           <div className="flex items-center gap-3">
-            
+
             <div>
 
               <h1 className="text-white text-2xl font-black uppercase leading-none font-[Montserrat]">
@@ -167,10 +167,10 @@ function Dashboard() {
             },
             {
               title: "Booking Aktif",
-              value: "3",
+              value: dashboardData.booking_aktif,
               icon: "inventory",
             },
-            
+
           ].map((item, index) => (
             <div
               key={index}

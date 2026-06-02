@@ -281,7 +281,7 @@ function HalamanPesanan() {
                     <div className="flex flex-col gap-4 lg:w-[220px]">
 
                       <button
-                        onClick={() => navigate(`/pembayaran/${item.id_booking}`)}
+                        onClick={() => navigate(`/pembayaran/${item.id}`)}
                         className="bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold"
                       >
                         Lihat Detail
