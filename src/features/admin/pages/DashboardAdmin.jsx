@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -15,6 +16,35 @@ import {
 
 function AdminDashboard() {
   const navigate = useNavigate();
+  const [dashboard, setDashboard] = useState({
+    total_booking: 0,
+    total_user: 0,
+    total_lapangan: 0,
+    total_pendapatan: 0,
+  });
+  useEffect(() => {
+    getDashboard();
+  }, []);
+
+  const getDashboard = async () => {
+
+    try {
+
+      const response = await axios.get(
+        "http://localhost:3000/admin/dashboard"
+      );
+
+      console.log("Dashboard Data:", response.data);
+
+      setDashboard(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -45,26 +75,6 @@ function AdminDashboard() {
           </h1>
 
           <nav className="hidden md:flex items-center gap-10 text-sm text-white/80">
-            <a href="#" className="hover:text-white transition">
-              Home
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              About
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              Fasilitas
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              Harga
-            </a>
-
-            <a href="#" className="hover:text-white transition">
-              Kontak
-            </a>
-
             <button
               onClick={handleLogout}
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-sm flex items-center gap-2 transition shadow-lg"
@@ -99,7 +109,9 @@ function AdminDashboard() {
                 Dashboard
               </button>
 
-              <button className="w-full flex items-center gap-3 hover:bg-white/5 px-4 py-3 rounded-xl text-sm transition">
+              <button
+                onClick={() => navigate("/admin/bookings")}
+                className="w-full flex items-center gap-3 hover:bg-white/5 px-4 py-3 rounded-xl text-sm transition">
                 <CalendarDays size={18} />
                 Bookings
               </button>
@@ -161,7 +173,7 @@ function AdminDashboard() {
                   </p>
 
                   <h2 className="text-4xl font-extrabold mt-3">
-                    1,284
+                    {dashboard.total_booking}
                   </h2>
 
                   <p className="text-green-400 text-sm mt-3">
@@ -184,11 +196,11 @@ function AdminDashboard() {
 
                 <div>
                   <p className="text-white/50 text-sm uppercase tracking-wide">
-                    Revenue
+                    Total User
                   </p>
 
                   <h2 className="text-4xl font-extrabold mt-3">
-                    $42.5k
+                    {dashboard.total_user}
                   </h2>
 
                   <p className="text-cyan-400 text-sm mt-3">
@@ -215,7 +227,7 @@ function AdminDashboard() {
                   </p>
 
                   <h2 className="text-4xl font-extrabold mt-3">
-                    18/24
+                    {dashboard.total_lapangan}
                   </h2>
 
                   <p className="text-white/50 text-sm mt-3">
@@ -228,6 +240,21 @@ function AdminDashboard() {
                 </div>
 
               </div>
+
+            </div>
+            {/* TOTAL PENDAPATAN */}
+            <div className="bg-[#0b1f38] border border-white/10 rounded-2xl p-6 mt-6">
+
+              <p className="text-white/50 text-sm uppercase">
+                Total Pendapatan
+              </p>
+
+              <h2 className="text-4xl font-extrabold mt-3">
+                Rp{" "}
+                {Number(
+                  dashboard.total_pendapatan
+                ).toLocaleString("id-ID")}
+              </h2>
 
             </div>
 

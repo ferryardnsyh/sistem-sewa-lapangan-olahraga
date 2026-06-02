@@ -10,6 +10,7 @@ import Halamanpesan from "./features/pelanggan/pages/Halamanpesan"
 import Pembayaran from "./features/pelanggan/pages/Pembayaran"
 
 import DashboardAdmin from "./features/admin/pages/DashboardAdmin"
+import BookingsAdmin from "./features/admin/pages/BookingsAdmin";
 
 import ProtectedRoute from "./components/ProtectedRoute"
 
@@ -86,8 +87,13 @@ function App() {
           element={<DashboardAdmin />}
         />
 
+        <Route
+          path="/admin/bookings"
+          element={<BookingsAdmin />}
+        />
 
       </Routes>
+
 
     </BrowserRouter>
 

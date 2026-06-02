@@ -352,6 +352,139 @@ app.get("/dashboard/:id", (req, res) => {
 
 });
 
+// ================= BAYAR BOOKING =================
+app.put("/booking/bayar/:id", (req, res) => {
+
+  const id = req.params.id;
+
+  db.query(
+    `
+    UPDATE booking
+    SET status = 'selesai'
+    WHERE id = ?
+    `,
+    [id],
+    (err, result) => {
+
+      if (err) {
+        console.log(err);
+
+        return res.status(500).json({
+          message: "Gagal melakukan pembayaran"
+        });
+      }
+
+      res.json({
+        message: "Pembayaran berhasil"
+      });
+
+    }
+  );
+
+});
+
+// ================= ADMIN DASHBOARD =================
+app.get("/admin/dashboard", (req, res) => {
+
+  const sql = `
+    SELECT
+      (SELECT COUNT(*) FROM booking) AS total_booking,
+      (SELECT COUNT(*) FROM user) AS total_user,
+      (SELECT COUNT(*) FROM lapangan) AS total_lapangan,
+      (SELECT IFNULL(SUM(total_harga),0) FROM booking) AS total_pendapatan
+  `;
+
+  db.query(sql, (err, result) => {
+
+    if (err) {
+
+      console.log(err);
+
+      return res.status(500).json({
+        message: "Database Error"
+      });
+
+    }
+
+    res.json(result[0]);
+
+  });
+
+});
+
+// ================= ADMIN BOOKINGS =================
+app.get("/admin/bookings", (req, res) => {
+
+  const sql = `
+    SELECT
+      b.id,
+      u.nama_user,
+      l.nama_lapangan,
+      b.tanggal,
+      b.jam_mulai,
+      b.jam_selesai,
+      b.total_harga,
+      b.status
+    FROM booking b
+    INNER JOIN user u
+      ON b.user_id = u.id_user
+    INNER JOIN lapangan l
+      ON b.lapangan_id = l.id_lapangan
+    ORDER BY b.id DESC
+  `;
+
+  db.query(sql, (err, result) => {
+
+    if (err) {
+
+      console.log(err);
+
+      return res.status(500).json({
+        message: "Database Error"
+      });
+
+    }
+
+    res.json(result);
+
+  });
+
+});
+
+// ================= UPDATE STATUS BOOKING =================
+app.put("/admin/bookings/:id", (req, res) => {
+
+  const id = req.params.id;
+  const { status } = req.body;
+
+  db.query(
+    `
+    UPDATE booking
+    SET status = ?
+    WHERE id = ?
+    `,
+    [status, id],
+    (err, result) => {
+
+      if (err) {
+
+        console.log(err);
+
+        return res.status(500).json({
+          message: "Gagal update status"
+        });
+
+      }
+
+      res.json({
+        message: "Status berhasil diubah"
+      });
+
+    }
+  );
+
+});
+
 // ================= RUN =================
 app.listen(process.env.PORT, () => {
 

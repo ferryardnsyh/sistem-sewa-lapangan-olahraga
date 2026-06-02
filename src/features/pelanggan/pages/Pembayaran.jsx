@@ -13,18 +13,64 @@ import {
 } from "lucide-react";
 
 function PembayaranPage() {
-  const [metode, setMetode] = useState("qris");
+
   const navigate = useNavigate();
-  const booking = {
-    lapangan: "Arena Futsal Utama",
-    tanggal: "20 Mei 2025",
-    jam: "19:00 - 20:00",
-    durasi: "1 Jam",
-    harga: 150000,
-    admin: 5000,
+  const { id } = useParams();
+
+  const [booking, setBooking] = useState(null);
+
+  const [metode, setMetode] = useState("qris");
+  const admin = 5000;
+
+  const total =
+    Number(booking?.total_harga || 0) + admin;
+  useEffect(() => {
+    getBooking();
+  }, []);
+
+  const getBooking = async () => {
+    try {
+
+      const response = await axios.get(
+        `http://localhost:3000/booking/detail/${id}`
+      );
+
+      setBooking(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
   };
 
-  const total = booking.harga + booking.admin;
+  const handleBayar = async () => {
+    try {
+
+      await axios.put(
+        `http://localhost:3000/booking/bayar/${id}`
+      );
+
+      alert("Pembayaran berhasil");
+
+      navigate("/halamanpesan");
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Pembayaran gagal");
+
+    }
+  };
+
+  if (!booking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#071426] text-white">
+        Loading...
+      </div>
+    );
+  }
 
   return (
 
@@ -316,7 +362,7 @@ function PembayaranPage() {
                   <span>Lapangan</span>
 
                   <span className="text-white font-semibold">
-                    {booking.lapangan}
+                    {booking.nama_lapangan}
                   </span>
 
                 </div>
@@ -336,7 +382,11 @@ function PembayaranPage() {
                   <span>Jam</span>
 
                   <span className="text-white font-semibold">
-                    {booking.jam}
+                    <>
+                      {booking.jam_mulai?.slice(0, 5)}
+                      {" - "}
+                      {booking.jam_selesai?.slice(0, 5)}
+                    </>
                   </span>
 
                 </div>
@@ -346,7 +396,7 @@ function PembayaranPage() {
                   <span>Durasi</span>
 
                   <span className="text-white font-semibold">
-                    {booking.durasi}
+                    {booking.durasi} Jam
                   </span>
 
                 </div>
@@ -361,7 +411,11 @@ function PembayaranPage() {
 
                   <span>Harga Booking</span>
 
-                  <span>Rp 150.000</span>
+                  <span>
+                    Rp {Number(
+                      booking.total_harga
+                    ).toLocaleString("id-ID")}
+                  </span>
 
                 </div>
 
@@ -393,7 +447,9 @@ function PembayaranPage() {
 
               </div>
 
-              <button className="w-full mt-10 bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold text-lg">
+              <button
+                onClick={handleBayar}
+                className="w-full mt-10 bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold text-lg">
 
                 Bayar Sekarang
 
