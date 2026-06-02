@@ -12,7 +12,6 @@ import Pembayaran from "./features/pelanggan/pages/Pembayaran"
 import DashboardAdmin from "./features/admin/pages/DashboardAdmin"
 import DataBooking from "./features/admin/pages/DataBooking"
 import DataUser from "./features/admin/pages/DataUser"
-import LaporanAdmin from "./features/admin/pages/LaporanAdmin"
 
 import ProtectedRoute from "./components/ProtectedRoute"
 
@@ -107,15 +106,6 @@ function App() {
           element={
             <ProtectedRoute>
               <DataUser />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/laporan"
-          element={
-            <ProtectedRoute>
-              <LaporanAdmin />
             </ProtectedRoute>
           }
         />

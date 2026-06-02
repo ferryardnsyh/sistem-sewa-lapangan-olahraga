@@ -107,14 +107,6 @@ function AdminDashboard() {
             Data User
           </button>
 
-          <button
-            onClick={() => navigate("/admin/laporan")}
-            className="w-full flex items-center gap-3 hover:bg-white/5 px-4 py-3 rounded-xl transition"
-          >
-            <FileText size={18} />
-            Laporan
-          </button>
-
         </div>
 
         {/* LOGOUT */}
@@ -256,7 +248,7 @@ function AdminDashboard() {
 
                       <span
                         className={`px-3 py-1 rounded-full text-xs
-          ${item.status === "pending"
+                            ${item.status === "pending"
                             ? "bg-yellow-500/20 text-yellow-400"
                             : item.status === "selesai"
                               ? "bg-green-500/20 text-green-400"

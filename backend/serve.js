@@ -3,6 +3,7 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
+const midtransClient = require("midtrans-client");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -593,6 +594,122 @@ app.put("/admin/users/status/:id", (req, res) => {
     });
 
   });
+
+});
+
+// ================= MIDTRANS =================
+const snap = new midtransClient.Snap({
+  isProduction: false,
+  serverKey: process.env.MIDTRANS_SERVER_KEY,
+});
+
+// ================= CREATE MIDTRANS PAYMENT =================
+app.post("/create-transaction", async (req, res) => {
+  try {
+
+    console.log("BODY MASUK:");
+    console.log(req.body);
+
+    const booking_id = req.body.booking_id;
+    const total_harga = Number(req.body.total_harga);
+    const nama_user = req.body.nama_user;
+
+    console.log("booking_id =", booking_id);
+    console.log("total_harga =", total_harga);
+    console.log("nama_user =", nama_user);
+
+    const parameter = {
+      transaction_details: {
+        order_id: `BOOKING-${booking_id}-${Date.now()}`,
+        gross_amount: total_harga
+      },
+
+      customer_details: {
+        first_name: nama_user
+      }
+    };
+
+    console.log("PARAMETER MIDTRANS:");
+    console.log(JSON.stringify(parameter, null, 2));
+
+    const transaction =
+      await snap.createTransaction(parameter);
+
+    res.json({
+      token: transaction.token
+    });
+
+  } catch (error) {
+
+    console.log("MIDTRANS ERROR:");
+    console.log(error);
+
+    res.status(500).json({
+      message: "Gagal membuat transaksi"
+    });
+
+  }
+});
+
+// ================= MIDTRANS CALLBACK =================
+app.post("/payment/notification", async (req, res) => {
+
+  try {
+
+    const statusResponse =
+      await snap.transaction.notification(
+        req.body
+      );
+
+    const orderId =
+      statusResponse.order_id;
+
+    const transactionStatus =
+      statusResponse.transaction_status;
+
+    const bookingId =
+      orderId.split("-")[1];
+
+    if (
+      transactionStatus === "settlement"
+    ) {
+
+      db.query(
+        `
+        UPDATE booking
+        SET status='selesai'
+        WHERE id=?
+        `,
+        [bookingId]
+      );
+
+    }
+
+    if (
+      transactionStatus === "expire" ||
+      transactionStatus === "cancel"
+    ) {
+
+      db.query(
+        `
+        UPDATE booking
+        SET status='cancelled'
+        WHERE id=?
+        `,
+        [bookingId]
+      );
+
+    }
+
+    res.status(200).send("OK");
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json(error);
+
+  }
 
 });
 

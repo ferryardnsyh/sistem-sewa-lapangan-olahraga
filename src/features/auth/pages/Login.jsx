@@ -10,7 +10,12 @@ function Login() {
 
   // AUTO LOGIN CHECK
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const userData = localStorage.getItem("user");
+
+    const user =
+      userData && userData !== "undefined"
+        ? JSON.parse(userData)
+        : null;
 
     if (user) {
 

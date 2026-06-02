@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   LayoutDashboard,
@@ -14,6 +15,14 @@ import {
 } from "lucide-react";
 
 function DataBooking() {
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/homepage");
+  };
+
   const [search, setSearch] = useState("");
   useEffect(() => {
     getBookings();
@@ -85,7 +94,7 @@ function DataBooking() {
   return (
     <div className="min-h-screen bg-[#071426] text-white flex">
 
-      <aside className="w-72 shrink-0 bg-[#08182d] border-r border-white/10 min-h-screen">
+      <aside className="w-72 shrink-0 bg-[#08182d] border-r border-white/10 min-h-screen flex flex-col">
 
         <div className="p-6 border-b border-white/10">
 
@@ -99,7 +108,7 @@ function DataBooking() {
 
         </div>
 
-        <nav className="p-4 space-y-2">
+        <nav className="p-4 space-y-2 flex-1">
 
           <Link
             to="/dashboardadmin"
@@ -125,15 +134,19 @@ function DataBooking() {
             Data User
           </Link>
 
-          <Link
-            to="/admin/laporan"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10"
-          >
-            <FileText size={18} />
-            Laporan
-          </Link>
-
         </nav>
+        {/* LOGOUT */}
+        <div className="p-4 border-t border-white/10 mt-auto">
+
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-600 hover:bg-red-700 px-4 py-3 rounded-xl flex items-center justify-center gap-2 font-medium transition"
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
+
+        </div>
 
       </aside>
 
@@ -191,7 +204,7 @@ function DataBooking() {
             <h2 className="text-4xl font-black mt-3">
               {
                 bookings.filter(
-                  (item) => item.status === "selesai"
+                  (item) => item.status === "paid"
                 ).length
               }
             </h2>
