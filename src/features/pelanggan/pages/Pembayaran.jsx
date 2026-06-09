@@ -57,45 +57,41 @@ function PembayaranPage() {
   };
 
   const handlePayment = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/create-transaction",
-        {
-          booking_id: booking.id,
-          total_harga: total,
-          nama_user: "Customer",
-        }
-      );
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/create-transaction",
+      {
+        booking_id: booking.id,
+        total_harga: total,
+        nama_user: "Customer",
+      }
+    );
 
-      window.snap.pay(response.data.token, {
-        onSuccess: async function () {
-          await axios.put(
-            `http://localhost:3000/booking/bayar/${booking.id}`
-          );
-
-          alert("Pembayaran berhasil");
-
+    window.snap.pay(response.data.token, {
+      onSuccess: async function (result) {
+        await axios.put(
+          `http://localhost:3000/booking/bayar/${booking.id}`
+        );
+        // Tutup popup dulu, baru navigate
+        setTimeout(() => {
           navigate("/halamanpesan");
-        },
-
-        onPending: function () {
-          alert("Menunggu pembayaran");
-        },
-
-        onError: function () {
-          alert("Pembayaran gagal");
-        },
-
-        onClose: function () {
-          alert("Popup pembayaran ditutup");
-        },
-      });
-    } catch (error) {
-      console.log(error);
-
-      alert("Gagal membuat transaksi");
-    }
-  };
+        }, 500);
+      },
+      onPending: function () {
+        alert("Menunggu pembayaran");
+      },
+      onError: function () {
+        alert("Pembayaran gagal");
+      },
+      onClose: function () {
+        alert("Popup pembayaran ditutup");
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    alert("Gagal membuat transaksi");
+  }
+};
 
   if (!booking) {
     return (

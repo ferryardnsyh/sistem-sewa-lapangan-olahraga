@@ -1,129 +1,108 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { LogOut } from "lucide-react";
+import { LogOut, Search, Eye, UserCheck, UserX, LayoutDashboard, CalendarDays, Users, Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-import {
-  Search,
-  Eye,
-  UserCheck,
-  UserX,
-  LayoutDashboard,
-  CalendarDays,
-  Users
-} from "lucide-react";
-
 function DataUser() {
-
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [users, setUsers] = useState([]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/homepage");
   };
 
-  const [search, setSearch] = useState("");
-  const [users, setUsers] = useState([]);
   useEffect(() => {
     getUsers();
   }, []);
 
   const getUsers = async () => {
-
     try {
-
-      const response = await axios.get(
-        "http://localhost:3000/admin/users"
-      );
-
+      const response = await axios.get("http://localhost:3000/admin/users");
       setUsers(response.data);
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   };
 
   const updateStatus = async (id, status) => {
-
     try {
-
-      await axios.put(
-        `http://localhost:3000/admin/users/status/${id}`,
-        { status }
-      );
-
+      await axios.put(`http://localhost:3000/admin/users/status/${id}`, { status });
       getUsers();
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   };
 
   const filteredUsers = users.filter(
     (user) =>
-      user.nama_user
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-
-      user.email
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      user.nama_user.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="min-h-screen bg-[#071426] text-white flex">
 
-      <aside className="w-72 shrink-0 bg-[#08182d] border-r border-white/10 min-h-screen flex flex-col">
+      {/* Overlay mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-20 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-        <div className="p-6 border-b border-white/10">
-
-          <h1 className="text-2xl font-black italic">
-            SPORT CENTER
-          </h1>
-
-          <p className="text-white/50 text-sm mt-1">
-            Admin Panel
-          </p>
-
+      {/* SIDEBAR */}
+      <aside
+        className={`
+          fixed top-0 left-0 h-full z-30 w-72 bg-[#08182d] border-r border-white/10
+          flex flex-col transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0 lg:static lg:z-auto
+        `}
+      >
+        <div className="p-6 border-b border-white/10 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-black italic">SPORT CENTER</h1>
+            <p className="text-white/50 text-sm mt-1">Admin Panel</p>
+          </div>
+          <button
+            className="lg:hidden text-white/50 hover:text-white"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X size={20} />
+          </button>
         </div>
 
         <nav className="p-4 space-y-2 flex-1">
-
           <Link
             to="/dashboardadmin"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10"
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition"
           >
             <LayoutDashboard size={18} />
             Dashboard
           </Link>
-
           <Link
             to="/admin/booking"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10"
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition"
           >
             <CalendarDays size={18} />
             Data Booking
           </Link>
-
           <Link
             to="/admin/users"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600"
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 font-medium"
           >
             <Users size={18} />
             Data User
           </Link>
-
         </nav>
 
-        {/* LOGOUT */}
-        <div className="p-4 border-t border-white/10 mt-auto">
-
+        <div className="p-4 border-t border-white/10">
           <button
             onClick={handleLogout}
             className="w-full bg-red-600 hover:bg-red-700 px-4 py-3 rounded-xl flex items-center justify-center gap-2 font-medium transition"
@@ -131,197 +110,161 @@ function DataUser() {
             <LogOut size={18} />
             Logout
           </button>
-
         </div>
-
       </aside>
 
-      <main className="flex-1 p-8">
+      {/* MAIN */}
+      <main className="flex-1 min-w-0 flex flex-col">
 
-        {/* STATISTIK */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        {/* Top bar mobile */}
+        <header className="lg:hidden flex items-center justify-between px-4 py-4 bg-[#08182d] border-b border-white/10 sticky top-0 z-10">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="text-white/70 hover:text-white"
+          >
+            <Menu size={24} />
+          </button>
+          <h1 className="font-black italic text-lg">SPORT CENTER</h1>
+          <div className="w-6" />
+        </header>
 
-          <div className="bg-[#0b1f38] rounded-2xl p-6 border border-white/10">
-            <p className="text-white/50 text-sm">
-              Total User
-            </p>
+        <div className="p-4 md:p-6 lg:p-8 space-y-6">
 
-            <h2 className="text-4xl font-black mt-3">
-              {users.length}
-            </h2>
+          {/* Page title */}
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">Data User</h1>
+            <p className="text-white/50 mt-1 text-sm">Kelola seluruh akun pengguna.</p>
           </div>
 
-          <div className="bg-[#0b1f38] rounded-2xl p-6 border border-white/10">
-            <p className="text-white/50 text-sm">
-              User Aktif
-            </p>
-
-            <h2 className="text-4xl font-black">
-              {
-                users.filter(
-                  (user) => user.status === "active"
-                ).length
-              }
-            </h2>
+          {/* STATS */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { label: "Total User", value: users.length, color: "text-white" },
+              { label: "User Aktif", value: users.filter((u) => u.status === "active").length, color: "text-green-400" },
+              { label: "User Nonaktif", value: users.filter((u) => u.status === "inactive").length, color: "text-red-400" },
+            ].map(({ label, value, color }) => (
+              <div key={label} className="bg-[#0b1f38] rounded-2xl p-5 border border-white/10">
+                <p className="text-white/50 text-sm">{label}</p>
+                <h2 className={`text-4xl font-black mt-2 ${color}`}>{value}</h2>
+              </div>
+            ))}
           </div>
 
-          <div className="bg-[#0b1f38] rounded-2xl p-6 border border-white/10">
-            <p className="text-white/50 text-sm">
-              User Nonaktif
-            </p>
-
-            <h2 className="text-4xl font-black text-red-400 mt-3">
-              {
-                users.filter(
-                  (user) => user.status === "inactive"
-                ).length
-              }
-            </h2>
+          {/* SEARCH */}
+          <div className="bg-[#0b1f38] border border-white/10 rounded-2xl p-4">
+            <div className="relative">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
+              <input
+                type="text"
+                placeholder="Cari user berdasarkan nama atau email..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full text-sm bg-[#08182d] border border-white/10 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-blue-500 transition"
+              />
+            </div>
           </div>
 
-        </div>
-
-        {/* SEARCH */}
-        <div className="bg-[#0b1f38] border border-white/10 rounded-2xl p-5 mb-6">
-
-          <div className="relative">
-
-            <Search
-              size={18}
-              className="absolute left-4 top-4 text-white/40"
-            />
-
-            <input
-              type="text"
-              placeholder="Cari user..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#08182d] border border-white/10 rounded-xl pl-12 pr-4 py-3 outline-none"
-            />
-
+          {/* TABLE — desktop */}
+          <div className="hidden md:block bg-[#0b1f38] border border-white/10 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[700px]">
+                <thead className="bg-[#08182d] text-white/60 text-sm uppercase tracking-wide">
+                  <tr>
+                    {["ID", "Nama", "Email", "Role", "Status", "Aksi"].map((h) => (
+                      <th key={h} className={`px-5 py-4 text-left ${h === "Aksi" ? "text-center" : ""}`}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="text-center py-12 text-white/40">
+                        Tidak ada user ditemukan.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredUsers.map((user) => (
+                      <tr key={user.id_user} className="border-t border-white/5 hover:bg-white/5 transition">
+                        <td className="px-5 py-4 text-white/70 text-sm">#{user.id_user}</td>
+                        <td className="px-5 py-4 font-medium">{user.nama_user}</td>
+                        <td className="px-5 py-4 text-white/70 text-sm">{user.email}</td>
+                        <td className="px-5 py-4 capitalize">{user.role}</td>
+                        <td className="px-5 py-4">
+                          {user.status === "active" ? (
+                            <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-medium">Aktif</span>
+                          ) : (
+                            <span className="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-medium">Nonaktif</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="flex items-center justify-center gap-2">
+                            <button className="bg-cyan-600 hover:bg-cyan-700 p-2 rounded-lg transition" title="Detail">
+                              <Eye size={16} />
+                            </button>
+                            <button onClick={() => updateStatus(user.id_user, "active")} className="bg-green-600 hover:bg-green-700 p-2 rounded-lg transition" title="Aktifkan">
+                              <UserCheck size={16} />
+                            </button>
+                            <button onClick={() => updateStatus(user.id_user, "inactive")} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="Nonaktifkan">
+                              <UserX size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-        </div>
-
-        {/* TABLE */}
-        <div className="bg-[#0b1f38] border border-white/10 rounded-2xl overflow-hidden">
-
-          <table className="w-full">
-
-            <thead className="bg-[#08182d]">
-
-              <tr>
-
-                <th className="text-left px-6 py-4">
-                  ID
-                </th>
-
-                <th className="text-left px-6 py-4">
-                  Nama
-                </th>
-
-                <th className="text-left px-6 py-4">
-                  Email
-                </th>
-
-                <th className="text-left px-6 py-4">
-                  Role
-                </th>
-
-                <th className="text-left px-6 py-4">
-                  Status
-                </th>
-
-                <th className="text-center px-6 py-4">
-                  Aksi
-                </th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {filteredUsers.map((user) => (
-
-                <tr
-                  key={user.id_user}
-                  className="border-t border-white/5 hover:bg-white/5"
-                >
-
-                  <td className="px-6 py-5">
-                    {user.id_user}
-                  </td>
-
-                  <td className="px-6 py-5">
-                    {user.nama_user}
-                  </td>
-
-                  <td className="px-6 py-5">
-                    {user.email}
-                  </td>
-
-                  <td className="px-6 py-5 capitalize">
-                    {user.role}
-                  </td>
-
-                  <td className="px-6 py-5">
-
+          {/* CARD LIST — mobile */}
+          <div className="md:hidden space-y-3">
+            {filteredUsers.length === 0 ? (
+              <div className="text-center py-12 text-white/40 bg-[#0b1f38] rounded-2xl border border-white/10">
+                Tidak ada user ditemukan.
+              </div>
+            ) : (
+              filteredUsers.map((user) => (
+                <div key={user.id_user} className="bg-[#0b1f38] border border-white/10 rounded-2xl p-4 space-y-3">
+                  {/* Header */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40 font-mono">#{user.id_user}</span>
                     {user.status === "active" ? (
-                      <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs">
-                        Aktif
-                      </span>
+                      <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-medium">Aktif</span>
                     ) : (
-                      <span className="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs">
-                        Nonaktif
-                      </span>
+                      <span className="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-medium">Nonaktif</span>
                     )}
+                  </div>
 
-                  </td>
+                  {/* Info */}
+                  <div>
+                    <p className="font-semibold text-base">{user.nama_user}</p>
+                    <p className="text-sm text-white/50 mt-0.5">{user.email}</p>
+                  </div>
 
-                  <td className="px-6 py-5">
-
-                    <div className="flex items-center justify-center gap-2">
-
-                      <button
-                        className="bg-cyan-600 hover:bg-cyan-700 p-2 rounded-lg"
-                      >
-                        <Eye size={18} />
+                  <div className="flex items-center justify-between pt-1 border-t border-white/10">
+                    <span className="text-sm capitalize text-white/60 bg-white/10 px-3 py-1 rounded-full">
+                      {user.role}
+                    </span>
+                    <div className="flex gap-2">
+                      <button className="bg-cyan-600 hover:bg-cyan-700 p-2 rounded-lg transition" title="Detail">
+                        <Eye size={16} />
                       </button>
-
-                      <button
-                        onClick={() =>
-                          updateStatus(user.id_user, "active")
-                        }
-                        className="bg-green-600 hover:bg-green-700 p-2 rounded-lg"
-                      >
-                        <UserCheck size={18} />
+                      <button onClick={() => updateStatus(user.id_user, "active")} className="bg-green-600 hover:bg-green-700 p-2 rounded-lg transition" title="Aktifkan">
+                        <UserCheck size={16} />
                       </button>
-
-                      <button
-                        onClick={() =>
-                          updateStatus(user.id_user, "inactive")
-                        }
-                        className="bg-red-600 hover:bg-red-700 p-2 rounded-lg"
-                      >
-                        <UserX size={18} />
+                      <button onClick={() => updateStatus(user.id_user, "inactive")} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="Nonaktifkan">
+                        <UserX size={16} />
                       </button>
-
                     </div>
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
 
         </div>
       </main>
-
     </div>
   );
 }

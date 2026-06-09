@@ -187,11 +187,7 @@ function Login() {
               <label className="text-white text-sm">
                 Kata Sandi
               </label>
-
-              <button className="text-blue-400 text-sm hover:text-blue-300 transition">
-                Lupa Kata Sandi?
-              </button>
-
+              
             </div>
 
             <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-4">
