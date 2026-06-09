@@ -278,21 +278,18 @@ function HalamanPesanan() {
                     </div>
 
                     {/* ACTION */}
-                    <div className="flex flex-col gap-4 lg:w-[220px]">
+                    {/* ACTION */}
+<div className="flex flex-col gap-4 lg:w-[220px]">
 
-                      <button
-                        onClick={() => navigate(`/pembayaran/${item.id}`)}
-                        className="bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold"
-                      >
-                        Lihat Detail
-                      </button>
+{/* BUTTON 1: lihat detail */}
+<button
+  onClick={() => navigate(`/pembayaran/${item.id}`)}
+  className="bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl font-bold"
+>
+  Lihat Detail
+</button>
 
-                      <button
-                        className="bg-[#08182d] border border-white/10 hover:border-blue-500 transition py-4 rounded-2xl font-bold"
-                      >
-                        Download Invoice
-                      </button>
-                    </div>
+</div>
                   </div>
                 </div>
               </div>
