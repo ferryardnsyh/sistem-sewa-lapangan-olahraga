@@ -145,30 +145,38 @@ function PembayaranPage() {
                 <ReceiptText className="text-blue-400" />
 
                 <h2 className="text-3xl font-bold">
-                  Informasi Pembayaran
+                  Detail Lapangan
                 </h2>
 
               </div>
 
               <div className="bg-[#08182d] p-6 rounded-2xl">
 
-                <p className="text-white/70">
-                  Setelah menekan tombol bayar,
-                  Midtrans akan menampilkan
-                  seluruh metode pembayaran
-                  yang tersedia seperti:
-                </p>
+                <img
+                  src={booking.gambar}
+                  alt={booking.nama_lapangan}
+                  className="w-full h-72 object-cover rounded-2xl"
+                />
 
-                <ul className="mt-4 space-y-2 text-white/60">
+                <div className="mt-5">
 
-                  <li>• QRIS</li>
-                  <li>• GoPay</li>
-                  <li>• Dana</li>
-                  <li>• ShopeePay</li>
-                  <li>• Virtual Account</li>
-                  <li>• Transfer Bank</li>
+                  <h3 className="text-2xl font-bold">
+                    {booking.nama_lapangan}
+                  </h3>
 
-                </ul>
+                  <p className="text-white/60 mt-2">
+                    {booking.kategori}
+                  </p>
+
+                  <p className="text-white/50 mt-1">
+                    {new Date(booking.tanggal).toLocaleDateString("id-ID", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+
+                </div>
 
               </div>
 
@@ -194,7 +202,20 @@ function PembayaranPage() {
 
                 <div className="flex justify-between">
                   <span>Tanggal</span>
-                  <span>{booking.tanggal}</span>
+                  <span>
+                    {new Date(booking.tanggal).toLocaleDateString("id-ID", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Jam</span>
+                  <span>
+                    {booking.jam_mulai?.slice(0, 5)} - {booking.jam_selesai?.slice(0, 5)}
+                  </span>
                 </div>
 
                 <div className="flex justify-between">
