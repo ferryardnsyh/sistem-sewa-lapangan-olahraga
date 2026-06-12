@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
-import {
-  CalendarDays,
-  Clock3,
-  MapPin,
-  CreditCard,
-  BadgeDollarSign,
-} from "lucide-react";
+import { CalendarDays, Clock3, MapPin, CreditCard } from "lucide-react";
 
 function BookingPage() {
   const navigate = useNavigate();
@@ -22,9 +17,7 @@ function BookingPage() {
   const [selectedDate, setSelectedDate] = useState("");
   const [durasi, setDurasi] = useState(1);
   const [bookedSlots, setBookedSlots] = useState([]);
-  const totalHarga = selectedField
-    ? selectedField.harga * durasi
-    : 0;
+  const totalHarga = selectedField ? selectedField.harga * durasi : 0;
 
   // ================= FETCH LAPANGAN =================
   useEffect(() => {
@@ -67,13 +60,23 @@ function BookingPage() {
   // ================= BOOKING =================
   const handleBooking = async () => {
     if (!selectedDate || !selectedTime) {
-      alert("Pilih tanggal dan jam booking");
+      Swal.fire({
+        icon: "warning",
+        title: "Perhatian",
+        text: "Pilih tanggal dan jam booking terlebih dahulu",
+
+        showConfirmButton: false,
+        timer: 2500,
+
+        background: "rgba(8, 26, 56, 0.7)",
+        color: "#ffffff",
+        backdrop: "rgba(0, 0, 0, 0.3)",
+      });
       return;
     }
 
     try {
-      const jamSelesai =
-        `${parseInt(selectedTime.split(":")[0]) + durasi}:00`;
+      const jamSelesai = `${parseInt(selectedTime.split(":")[0]) + durasi}:00`;
 
       await axios.post("http://localhost:3000/booking", {
         user_id: user.id,
@@ -85,17 +88,36 @@ function BookingPage() {
         total_harga: totalHarga,
       });
 
-      alert("Booking berhasil dibuat!");
+      Swal.fire({
+        icon: "success",
+        title: "Booking Berhasil!",
 
-      navigate("/halamanpesan");
+        showConfirmButton: false,
+        timer: 2000,
+
+        background: "rgba(8, 26, 56, 0.7)",
+        color: "#ffffff",
+        backdrop: "rgba(0, 0, 0, 0.3)",
+      });
+
+      setTimeout(() => {
+        navigate("/halamanpesan");
+      }, 2000);
     } catch (error) {
-
       console.log(error.response?.data);
 
-      alert(
-        error.response?.data?.message || "Booking gagal"
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Booking Gagal",
+        text: error.response?.data?.message || "Booking gagal",
 
+        showConfirmButton: false,
+        timer: 3000,
+
+        background: "rgba(8, 26, 56, 0.7)",
+        color: "#ffffff",
+        backdrop: "rgba(0, 0, 0, 0.3)",
+      });
     }
   };
 
@@ -180,10 +202,11 @@ function BookingPage() {
                       setSelectedField(item);
                       setSelectedTime("");
                     }}
-                    className={`rounded-2xl overflow-hidden border cursor-pointer transition ${selectedField?.id_lapangan === item.id_lapangan
-                      ? "border-blue-500 scale-[1.02]"
-                      : "border-white/10 hover:border-blue-400"
-                      }`}
+                    className={`rounded-2xl overflow-hidden border cursor-pointer transition ${
+                      selectedField?.id_lapangan === item.id_lapangan
+                        ? "border-blue-500 scale-[1.02]"
+                        : "border-white/10 hover:border-blue-400"
+                    }`}
                   >
                     <img
                       src={item.gambar}
@@ -268,7 +291,6 @@ function BookingPage() {
               </div>
 
               <div className="space-y-5">
-
                 {/* INPUT JAM */}
                 <input
                   type="time"
@@ -276,25 +298,31 @@ function BookingPage() {
                   max="22:00"
                   value={selectedTime}
                   onChange={(e) => {
-
                     const jam = e.target.value;
 
                     if (jam < "08:00" || jam > "22:00") {
+                      Swal.fire({
+                        icon: "warning",
+                        title: "Jam Tidak Tersedia",
+                        text: "Jam booking hanya tersedia dari 08:00 sampai 22:00",
 
-                      alert("Jam booking hanya tersedia dari 08:00 sampai 22:00");
+                        showConfirmButton: false,
+                        timer: 2500,
+
+                        background: "rgba(8, 26, 56, 0.7)",
+                        color: "#ffffff",
+                        backdrop: "rgba(0, 0, 0, 0.3)",
+                      });
 
                       setSelectedTime("");
 
                       return;
-
                     }
 
                     setSelectedTime(jam);
-
                   }}
                   className="w-full bg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none"
                 />
-
 
                 {/* PILIH DURASI */}
                 <select
@@ -302,29 +330,16 @@ function BookingPage() {
                   onChange={(e) => setDurasi(Number(e.target.value))}
                   className="w-full bg-[#08182d] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-blue-500"
                 >
+                  <option value={1}>1 Jam</option>
 
-                  <option value={1}>
-                    1 Jam
-                  </option>
+                  <option value={2}>2 Jam</option>
 
-                  <option value={2}>
-                    2 Jam
-                  </option>
+                  <option value={3}>3 Jam</option>
 
-                  <option value={3}>
-                    3 Jam
-                  </option>
+                  <option value={4}>4 Jam</option>
 
-                  <option value={4}>
-                    4 Jam
-                  </option>
-
-                  <option value={5}>
-                    5 Jam
-                  </option>
-
+                  <option value={5}>5 Jam</option>
                 </select>
-
               </div>
             </div>
           </div>
@@ -362,11 +377,8 @@ function BookingPage() {
                 </div>
 
                 <div className="flex justify-between text-white/70">
-
                   <span>Durasi</span>
-                  <span className="text-white font-semibold">
-                    {durasi} Jam
-                  </span>
+                  <span className="text-white font-semibold">{durasi} Jam</span>
                 </div>
               </div>
 
@@ -376,8 +388,6 @@ function BookingPage() {
                 <h3 className="text-4xl font-extrabold mt-2">
                   Rp {totalHarga.toLocaleString("id-ID")}
                 </h3>
-
-                <BadgeDollarSign size={40} className="text-blue-400" />
               </div>
 
               <button

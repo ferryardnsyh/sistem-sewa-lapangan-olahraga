@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import {
   ArrowLeft,
@@ -21,21 +22,16 @@ function PembayaranPage() {
 
   const admin = 5000;
 
-  const total =
-    Number(booking?.total_harga || 0) + admin;
+  const total = Number(booking?.total_harga || 0) + admin;
 
   useEffect(() => {
     getBooking();
 
     const script = document.createElement("script");
 
-    script.src =
-      "https://app.sandbox.midtrans.com/snap/snap.js";
+    script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
 
-    script.setAttribute(
-      "data-client-key",
-      ""
-    );
+    script.setAttribute("data-client-key", "");
 
     document.body.appendChild(script);
 
@@ -47,7 +43,7 @@ function PembayaranPage() {
   const getBooking = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/booking/detail/${id}`
+        `http://localhost:3000/booking/detail/${id}`,
       );
 
       setBooking(response.data);
@@ -57,41 +53,79 @@ function PembayaranPage() {
   };
 
   const handlePayment = async () => {
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/create-transaction",
-      {
-        booking_id: booking.id,
-        total_harga: total,
-        nama_user: "Customer",
-      }
-    );
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/create-transaction",
+        {
+          booking_id: booking.id,
+          total_harga: total,
+          nama_user: "Customer",
+        },
+      );
 
-    window.snap.pay(response.data.token, {
-      onSuccess: async function (result) {
-        await axios.put(
-          `http://localhost:3000/booking/bayar/${booking.id}`
-        );
-        // Tutup popup dulu, baru navigate
-        setTimeout(() => {
-          navigate("/halamanpesan");
-        }, 500);
-      },
-      onPending: function () {
-        alert("Menunggu pembayaran");
-      },
-      onError: function () {
-        alert("Pembayaran gagal");
-      },
-      onClose: function () {
-        alert("Popup pembayaran ditutup");
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    alert("Gagal membuat transaksi");
-  }
-};
+      window.snap.pay(response.data.token, {
+        onSuccess: async function (result) {
+          await axios.put(`http://localhost:3000/booking/bayar/${booking.id}`);
+          // Tutup popup dulu, baru navigate
+          setTimeout(() => {
+            navigate("/halamanpesan");
+          }, 500);
+        },
+        onPending: function () {
+          Swal.fire({
+            icon: "info",
+            title: "Menunggu Pembayaran",
+
+            showConfirmButton: false,
+            timer: 2500,
+
+            background: "rgba(8, 26, 56, 0.7)",
+            color: "#ffffff",
+            backdrop: "rgba(0, 0, 0, 0.3)",
+          });
+        },
+        onError: function () {
+          Swal.fire({
+            icon: "error",
+            title: "Pembayaran Gagal",
+
+            showConfirmButton: false,
+            timer: 2500,
+
+            background: "rgba(8, 26, 56, 0.7)",
+            color: "#ffffff",
+            backdrop: "rgba(0, 0, 0, 0.3)",
+          });
+        },
+        onClose: function () {
+          Swal.fire({
+            icon: "warning",
+            title: "Pembayaran Dibatalkan",
+
+            showConfirmButton: false,
+            timer: 2500,
+
+            background: "rgba(8, 26, 56, 0.7)",
+            color: "#ffffff",
+            backdrop: "rgba(0, 0, 0, 0.3)",
+          });
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Transaksi Gagal",
+
+        showConfirmButton: false,
+        timer: 2500,
+
+        background: "rgba(8, 26, 56, 0.7)",
+        color: "#ffffff",
+        backdrop: "rgba(0, 0, 0, 0.3)",
+      });
+    }
+  };
 
   if (!booking) {
     return (
@@ -103,15 +137,10 @@ function PembayaranPage() {
 
   return (
     <div className="min-h-screen bg-[#071426] text-white">
-
       {/* NAVBAR */}
       <header className="bg-[#08182d] border-b border-white/10">
-
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-
-          <h1 className="text-2xl font-extrabold italic">
-            SPORT CENTER
-          </h1>
+          <h1 className="text-2xl font-extrabold italic">SPORT CENTER</h1>
 
           <button
             onClick={() => navigate("/halamanpesan")}
@@ -120,34 +149,23 @@ function PembayaranPage() {
             <ArrowLeft size={18} />
             Kembali
           </button>
-
         </div>
-
       </header>
 
       {/* CONTENT */}
       <section className="max-w-7xl mx-auto px-6 py-16">
-
         <div className="grid lg:grid-cols-3 gap-8">
-
           {/* LEFT */}
           <div className="lg:col-span-2 space-y-8">
-
             {/* DETAIL */}
             <div className="bg-[#0b1f38] border border-white/10 rounded-3xl p-8">
-
               <div className="flex items-center gap-3 mb-8">
-
                 <ReceiptText className="text-blue-400" />
 
-                <h2 className="text-3xl font-bold">
-                  Detail Lapangan
-                </h2>
-
+                <h2 className="text-3xl font-bold">Detail Lapangan</h2>
               </div>
 
               <div className="bg-[#08182d] p-6 rounded-2xl">
-
                 <img
                   src={booking.gambar}
                   alt={booking.nama_lapangan}
@@ -155,14 +173,11 @@ function PembayaranPage() {
                 />
 
                 <div className="mt-5">
-
                   <h3 className="text-2xl font-bold">
                     {booking.nama_lapangan}
                   </h3>
 
-                  <p className="text-white/60 mt-2">
-                    {booking.kategori}
-                  </p>
+                  <p className="text-white/60 mt-2">{booking.kategori}</p>
 
                   <p className="text-white/50 mt-1">
                     {new Date(booking.tanggal).toLocaleDateString("id-ID", {
@@ -171,26 +186,17 @@ function PembayaranPage() {
                       year: "numeric",
                     })}
                   </p>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
 
           {/* RIGHT */}
           <div>
-
             <div className="bg-[#0b1f38] border border-white/10 rounded-3xl p-8 sticky top-10">
-
-              <h2 className="text-3xl font-bold">
-                Ringkasan Booking
-              </h2>
+              <h2 className="text-3xl font-bold">Ringkasan Booking</h2>
 
               <div className="space-y-4 mt-8">
-
                 <div className="flex justify-between">
                   <span>Lapangan</span>
                   <span>{booking.nama_lapangan}</span>
@@ -210,7 +216,8 @@ function PembayaranPage() {
                 <div className="flex justify-between">
                   <span>Jam</span>
                   <span>
-                    {booking.jam_mulai?.slice(0, 5)} - {booking.jam_selesai?.slice(0, 5)}
+                    {booking.jam_mulai?.slice(0, 5)} -{" "}
+                    {booking.jam_selesai?.slice(0, 5)}
                   </span>
                 </div>
 
@@ -218,44 +225,30 @@ function PembayaranPage() {
                   <span>Durasi</span>
                   <span>{booking.durasi} Jam</span>
                 </div>
-
               </div>
 
               <div className="border-t border-white/10 my-6"></div>
 
               <div className="flex justify-between">
-
                 <span>Harga Booking</span>
 
                 <span>
-                  Rp{" "}
-                  {Number(
-                    booking.total_harga
-                  ).toLocaleString("id-ID")}
+                  Rp {Number(booking.total_harga).toLocaleString("id-ID")}
                 </span>
-
               </div>
 
               <div className="flex justify-between mt-3">
-
                 <span>Biaya Admin</span>
 
-                <span>
-                  Rp 5.000
-                </span>
-
+                <span>Rp 5.000</span>
               </div>
 
               <div className="border-t border-white/10 my-6"></div>
 
               <div className="flex justify-between font-bold text-xl">
-
                 <span>Total</span>
 
-                <span>
-                  Rp {total.toLocaleString("id-ID")}
-                </span>
-
+                <span>Rp {total.toLocaleString("id-ID")}</span>
               </div>
 
               <button
@@ -266,21 +259,13 @@ function PembayaranPage() {
               </button>
 
               <div className="mt-5 flex items-center gap-2 text-white/50">
-
                 <ShieldCheck size={18} />
-
                 Pembayaran Aman Midtrans
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </section>
-
     </div>
   );
 }
