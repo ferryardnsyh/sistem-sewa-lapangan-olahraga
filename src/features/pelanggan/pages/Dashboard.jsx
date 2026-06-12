@@ -209,7 +209,10 @@ function Dashboard() {
           <div className="lg:col-span-2 space-y-8">
 
             {/* JADWAL */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div
+  onClick={() => navigate("/halamanpesan")}
+  className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-lg transition"
+>
 
               <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
 
@@ -224,10 +227,13 @@ function Dashboard() {
                   </p>
 
                 </div>
-
-                <button className="text-blue-600 font-semibold text-sm">
-                  Lihat Semua
-                </button>
+{/*menjalankan BUTTON*/}
+<button
+  onClick={() => navigate("/halamanpesan")}
+  className="text-blue-600 font-semibold text-sm"
+>
+  Lihat Semua
+</button>
 
               </div>
 
