@@ -76,7 +76,33 @@ function BookingPage() {
     }
 
     try {
-      const jamSelesai = `${parseInt(selectedTime.split(":")[0]) + durasi}:00`;
+      const [jam, menit] = selectedTime.split(":").map(Number);
+      const tanggalMulai = new Date();
+      tanggalMulai.setHours(jam);
+      tanggalMulai.setMinutes(menit);
+
+      tanggalMulai.setHours(
+        tanggalMulai.getHours() + Number(durasi)
+      );
+
+      const jamSelesai =
+        tanggalMulai.getHours().toString().padStart(2, "0") + ":" +
+        tanggalMulai.getMinutes().toString().padStart(2, "0");
+      
+      const batasTutup = new Date();
+        batasTutup.setHours(22, 0, 0, 0);
+
+        if (tanggalMulai > batasTutup) {
+          Swal.fire({
+            icon: "warning",
+            title: "Jam Melebihi Batas",
+            text: "Booking maksimal selesai pukul 22:00",
+            showConfirmButton: false,
+            timer: 2500,
+          });
+
+          return;
+        }
 
       await axios.post("http://localhost:3000/booking", {
         user_id: user.id,
