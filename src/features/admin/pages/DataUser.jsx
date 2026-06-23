@@ -8,6 +8,10 @@ function DataUser() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
+  
+  // State Tambahan untuk Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -17,6 +21,11 @@ function DataUser() {
   useEffect(() => {
     getUsers();
   }, []);
+
+  // Reset halaman ke 1 saat admin melakukan pencarian data
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   const getUsers = async () => {
     try {
@@ -42,9 +51,14 @@ function DataUser() {
       user.email.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Logika Pemotongan Data untuk Pagination
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
     <div className="min-h-screen bg-[#071426] text-white flex">
-
       {/* Overlay mobile */}
       {sidebarOpen && (
         <div
@@ -115,7 +129,6 @@ function DataUser() {
 
       {/* MAIN */}
       <main className="flex-1 min-w-0 flex flex-col">
-
         {/* Top bar mobile */}
         <header className="lg:hidden flex items-center justify-between px-4 py-4 bg-[#08182d] border-b border-white/10 sticky top-0 z-10">
           <button
@@ -129,7 +142,6 @@ function DataUser() {
         </header>
 
         <div className="p-4 md:p-6 lg:p-8 space-y-6">
-
           {/* Page title */}
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">Data User</h1>
@@ -183,7 +195,7 @@ function DataUser() {
                       </td>
                     </tr>
                   ) : (
-                    filteredUsers.map((user) => (
+                    currentUsers.map((user) => (
                       <tr key={user.id_user} className="border-t border-white/5 hover:bg-white/5 transition">
                         <td className="px-5 py-4 text-white/70 text-sm">#{user.id_user}</td>
                         <td className="px-5 py-4 font-medium">{user.nama_user}</td>
@@ -215,6 +227,49 @@ function DataUser() {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Desktop */}
+            {filteredUsers.length > 0 && (
+              <div className="flex justify-between items-center bg-[#08182d] border-t border-white/10 p-4">
+                <div className="text-sm text-white/50">
+                  Menampilkan {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, filteredUsers.length)} dari {filteredUsers.length} user
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    className={`px-4 py-2 rounded-lg text-sm transition ${
+                      currentPage === 1 ? "bg-gray-700 cursor-not-allowed text-white/40" : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  >
+                    Previous
+                  </button>
+
+                  {[...Array(totalPages)].map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentPage(index + 1)}
+                      className={`px-3 py-2 rounded-lg text-sm transition ${
+                        currentPage === index + 1 ? "bg-blue-600 font-bold" : "bg-[#0b1f38] hover:bg-white/10"
+                      }`}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+
+                  <button
+                    disabled={currentPage === totalPages || totalPages === 0}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    className={`px-4 py-2 rounded-lg text-sm transition ${
+                      currentPage === totalPages || totalPages === 0 ? "bg-gray-700 cursor-not-allowed text-white/40" : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* CARD LIST — mobile */}
@@ -224,9 +279,8 @@ function DataUser() {
                 Tidak ada user ditemukan.
               </div>
             ) : (
-              filteredUsers.map((user) => (
+              currentUsers.map((user) => (
                 <div key={user.id_user} className="bg-[#0b1f38] border border-white/10 rounded-2xl p-4 space-y-3">
-                  {/* Header */}
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-white/40 font-mono">#{user.id_user}</span>
                     {user.status === "active" ? (
@@ -236,7 +290,6 @@ function DataUser() {
                     )}
                   </div>
 
-                  {/* Info */}
                   <div>
                     <p className="font-semibold text-base">{user.nama_user}</p>
                     <p className="text-sm text-white/50 mt-0.5">{user.email}</p>
@@ -262,6 +315,35 @@ function DataUser() {
               ))
             )}
           </div>
+
+          {/* Pagination Mobile */}
+          {filteredUsers.length > 0 && (
+            <div className="md:hidden flex justify-center items-center gap-2 mt-4">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                className={`px-3 py-2 rounded-lg text-sm ${
+                  currentPage === 1 ? "bg-gray-700 cursor-not-allowed text-white/40" : "bg-blue-600"
+                }`}
+              >
+                Prev
+              </button>
+
+              <span className="text-sm font-medium">
+                {currentPage} / {totalPages}
+              </span>
+
+              <button
+                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className={`px-3 py-2 rounded-lg text-sm ${
+                  currentPage === totalPages || totalPages === 0 ? "bg-gray-700 cursor-not-allowed text-white/40" : "bg-blue-600"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          )}
 
         </div>
       </main>
